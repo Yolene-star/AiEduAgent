@@ -44,6 +44,13 @@ vi.mock("@/lib/api", () => ({
             category: "待判断"
           }
         ]
+      }),
+    runCode: () =>
+      Promise.resolve({
+        status: "ok",
+        output: "hello",
+        feedback: "代码运行成功。",
+        sandbox: "mock-judge0"
       })
   }
 }));
@@ -57,5 +64,6 @@ describe("LearningWorkspace", () => {
     expect(screen.getByLabelText("输入问题")).toBeInTheDocument();
     expect(screen.getByText("动画讲解")).toBeInTheDocument();
     expect(screen.getByText("播放语音")).toBeInTheDocument();
+    expect(screen.getByText("Python 小实验")).toBeInTheDocument();
   });
 });

@@ -3,6 +3,7 @@ from unittest.mock import Mock, patch
 
 from app.core.stages import Stage
 from app.services.dify import DifyClient
+from app.services.judge0 import Judge0Client
 from app.main import (
     chat,
     courses,
@@ -182,6 +183,47 @@ class ApiTests(unittest.TestCase):
             CodeRunRequest(session_id=session_id, language="python", code="print('hello classifier')")
         )
         self.assertEqual(code_result.status, "ok")
+
+    def test_judge0_client_uses_real_api_when_configured(self) -> None:
+        client = Judge0Client()
+        old_base_url = client.settings.judge0_base_url
+        old_key = client.settings.judge0_api_key
+        client.settings.judge0_base_url = "https://judge0.example"
+        client.settings.judge0_api_key = "judge-key"
+
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            "status": {"description": "Accepted"},
+            "stdout": "hello\n",
+            "stderr": None,
+            "compile_output": None,
+        }
+        mock_response.raise_for_status.return_value = None
+
+        try:
+            with patch("app.services.judge0.httpx.Client") as mock_client:
+                mock_client.return_value.__enter__.return_value.post.return_value = mock_response
+                status, output, feedback = client.run_python("print('hello')")
+        finally:
+            client.settings.judge0_base_url = old_base_url
+            client.settings.judge0_api_key = old_key
+
+        self.assertEqual(status, "ok")
+        self.assertEqual(output, "hello")
+        self.assertIn("成功", feedback)
+
+    def test_judge0_client_falls_back_when_api_fails(self) -> None:
+        client = Judge0Client()
+        old_base_url = client.settings.judge0_base_url
+        client.settings.judge0_base_url = "https://judge0.example"
+        try:
+            with patch("app.services.judge0.httpx.Client") as mock_client:
+                mock_client.return_value.__enter__.return_value.post.side_effect = http_error()
+                status, _, feedback = client.run_python("print('hello')")
+        finally:
+            client.settings.judge0_base_url = old_base_url
+        self.assertEqual(status, "fallback")
+        self.assertIn("Judge0", feedback)
 
 
 if __name__ == "__main__":

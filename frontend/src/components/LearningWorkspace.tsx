@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { api, AnimationResponse, Course, QuizQuestion, Stage, StudentSession } from "@/lib/api";
 import { ClassificationAnimation } from "./ClassificationAnimation";
 import { SpeechButton } from "./SpeechButton";
+import { CodeRunner } from "./CodeRunner";
 
 const stages: { id: Stage; label: string }[] = [
   { id: "lower_primary", label: "小学低年级" },
@@ -202,6 +203,7 @@ export function LearningWorkspace() {
               </div>
             </div>
           ) : null}
+          <CodeRunner sessionId={session?.session_id ?? null} />
         </section>
 
         <aside className="panel meta-grid">

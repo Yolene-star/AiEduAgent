@@ -10,6 +10,9 @@ class Settings(BaseModel):
     dify_api_key: str = os.getenv("DIFY_API_KEY", "")
     dify_app_id: str = os.getenv("DIFY_APP_ID", "")
     dify_timeout_seconds: int = int(os.getenv("DIFY_TIMEOUT_SECONDS", "20"))
+    judge0_base_url: str = os.getenv("JUDGE0_BASE_URL", "")
+    judge0_api_key: str = os.getenv("JUDGE0_API_KEY", "")
+    judge0_timeout_seconds: int = int(os.getenv("JUDGE0_TIMEOUT_SECONDS", "20"))
 
 
 @lru_cache

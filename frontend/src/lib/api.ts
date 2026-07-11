@@ -119,10 +119,18 @@ export const api = {
     request<{ next_action: string; knowledge_point_id: string; reason: string; estimated_minutes: number }>(
       `/api/learning-path?session_id=${sessionId}`
     ),
-  animation: () => request<AnimationResponse>("/api/animations/classification")
-  ,
+  animation: () => request<AnimationResponse>("/api/animations/classification"),
   teacherAnalytics: () =>
     request<{ total_sessions: number; weak_knowledge_points: string[]; note: string }>(
       "/api/teacher/analytics"
-    )
+    ),
+  runCode: (sessionId: string, code: string) =>
+    request<{ status: string; output: string; feedback: string; sandbox: string }>("/api/code/run", {
+      method: "POST",
+      body: JSON.stringify({
+        session_id: sessionId,
+        language: "python",
+        code
+      })
+    })
 };

@@ -29,6 +29,7 @@ from app.models import (
 )
 from app.services.dify import dify_client
 from app.services.learning import recommend_next, update_mastery
+from app.services.judge0 import judge0_client
 from app.services.store import store
 from app.services.tts import run_mock_loopback
 
@@ -219,11 +220,12 @@ def run_code(payload: CodeRunRequest) -> CodeRunResponse:
             feedback="这段代码包含文件或系统访问。MVP 会先阻止它，正式版将通过 Judge0 沙箱运行。",
             sandbox="mock-judge0",
         )
+    status, output, feedback = judge0_client.run_python(payload.code)
     return CodeRunResponse(
-        status="ok",
-        output="示例运行完成",
-        feedback="MVP 暂不直接执行学生代码。正式版会接入 Judge0，并给出分级调试提示。",
-        sandbox="mock-judge0",
+        status=status,
+        output=output,
+        feedback=feedback,
+        sandbox="judge0" if judge0_client.is_configured() else "mock-judge0",
     )
 
 

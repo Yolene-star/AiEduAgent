@@ -83,6 +83,15 @@ DIFY_API_KEY=你的 Dify 应用 API Key
 
 未配置 API Key、网络失败、代理缺依赖或 Dify 返回空答案时，系统会自动降级为本地适龄教学回答，保证演示链路不中断。
 
+## Judge0 配置
+
+在线编程通过 `/api/code/run` 统一代理。开发期未配置 Judge0 时使用安全 fallback，不会在本机直接执行学生代码。
+
+```bash
+JUDGE0_BASE_URL=https://your-judge0-host
+JUDGE0_API_KEY=可选
+```
+
 ## Git 使用说明
 
 当前运行环境会把 `.git` 特殊挂载为只读目录，因此本项目使用分离 Git 目录 `.repo/`。初始化命令：

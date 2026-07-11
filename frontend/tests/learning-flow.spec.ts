@@ -57,6 +57,16 @@ test("student can see MVP learning workflow controls", async ({ page }) => {
       }
     });
   });
+  await page.route("**/api/code/run", async (route) => {
+    await route.fulfill({
+      json: {
+        status: "ok",
+        output: "hello",
+        feedback: "代码运行成功。",
+        sandbox: "mock-judge0"
+      }
+    });
+  });
 
   await page.goto("/");
   await expect(page.getByText("AiEduAgent")).toBeVisible();
@@ -66,6 +76,8 @@ test("student can see MVP learning workflow controls", async ({ page }) => {
   await expect(page.getByRole("button", { name: "播放语音" })).toBeVisible();
   await page.getByRole("button", { name: "动画讲解" }).click();
   await expect(page.getByText("观察对象")).toBeVisible();
+  await page.getByRole("button", { name: "运行代码" }).click();
+  await expect(page.getByText(/代码运行成功/)).toBeVisible();
 });
 
 test("teacher can see analytics dashboard", async ({ page }) => {
