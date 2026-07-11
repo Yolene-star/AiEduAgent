@@ -58,6 +58,12 @@ cd backend
 python3 -m unittest discover -s tests
 ```
 
+真实 HTTP 冒烟测试：
+
+```bash
+python3 scripts/http_smoke.py
+```
+
 前端：
 
 ```bash
