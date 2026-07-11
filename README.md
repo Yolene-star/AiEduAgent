@@ -15,6 +15,7 @@
 
 - Frontend: Next.js + React + TypeScript
 - Backend: FastAPI + Python 3.10
+- Persistence: SQLite during local development
 - AI/RAG: Dify API adapter with local fallback
 - Tests: backend unittest/pytest-compatible layout, frontend Vitest, behavior tests with Playwright
 - TTS: Mock loopback first, real provider later
@@ -35,6 +36,8 @@ uvicorn app.main:app --reload --port 8000
 cd backend
 python3 -m unittest discover -s tests
 ```
+
+后端会在 `backend/aieduagent.db` 创建本地 SQLite 数据库。该文件是运行产物，不会进入 Git。
 
 ## 前端启动
 

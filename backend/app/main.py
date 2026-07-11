@@ -94,8 +94,8 @@ def chat(payload: ChatRequest) -> ChatResponse:
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="session not found") from exc
     answer, source = dify_client.generate_answer(session.stage, payload.message, payload.knowledge_point_id)
-    session.messages.append({"role": "user", "content": payload.message})
-    session.messages.append({"role": "assistant", "content": answer})
+    store.add_message(session.session_id, "user", payload.message)
+    store.add_message(session.session_id, "assistant", answer)
     return ChatResponse(
         answer=answer,
         stage=session.stage,
@@ -128,6 +128,8 @@ def submit_quiz(payload: QuizSubmitRequest) -> QuizSubmitResponse:
 
     correct = payload.answer == question["answer"]
     mastery = update_mastery(session, str(question["knowledge_point_id"]), correct)
+    store.set_mastery(session.session_id, str(question["knowledge_point_id"]), mastery)
+    store.record_quiz_attempt(session.session_id, payload.question_id, payload.answer, correct, mastery)
     feedback = "答对了，继续保持。" if correct else "这次还不稳，我们换个例子再练一次。"
     return QuizSubmitResponse(
         correct=correct,
@@ -190,14 +192,15 @@ def classification_animation() -> AnimationResponse:
 @app.get("/api/teacher/analytics", response_model=TeacherAnalyticsResponse)
 def teacher_analytics() -> TeacherAnalyticsResponse:
     weak: dict[str, int] = {}
-    for session in store.sessions.values():
+    sessions = store.list_sessions()
+    for session in sessions:
         for point_id, score in session.mastery.items():
             if score < 60:
                 weak[point_id] = weak.get(point_id, 0) + 1
     return TeacherAnalyticsResponse(
-        total_sessions=len(store.sessions),
+        total_sessions=len(sessions),
         weak_knowledge_points=sorted(weak, key=weak.get, reverse=True),
-        note="MVP uses in-memory demo analytics. Replace with SQLite aggregation in the next persistence step.",
+        note="MVP uses SQLite-backed demo analytics. Replace with SQL aggregation when datasets grow.",
     )
 
 

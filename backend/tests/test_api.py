@@ -16,6 +16,7 @@ from app.main import (
     tts_loopback,
     run_code,
 )
+from app.services.store import store
 from app.models import (
     ChatRequest,
     QuizGenerateRequest,
@@ -88,6 +89,35 @@ class ApiTests(unittest.TestCase):
 
         recommendation = learning_path(session_id)
         self.assertTrue(recommendation.reason)
+
+    def test_sqlite_persists_messages_mastery_and_quiz_attempts(self) -> None:
+        session_id = self.create_session(Stage.high_school)
+        chat(
+            ChatRequest(
+                session_id=session_id,
+                message="什么是训练集？",
+                knowledge_point_id="train-test",
+            )
+        )
+        quiz = generate_quiz(QuizGenerateRequest(session_id=session_id, knowledge_point_id="simple-classifier"))
+        question = quiz["questions"][0]
+        submit_quiz(
+            QuizSubmitRequest(
+                session_id=session_id,
+                question_id=str(question["id"]),
+                answer=str(question["answer"]),
+            )
+        )
+
+        reloaded = store.require_session(session_id)
+        self.assertGreaterEqual(len(reloaded.messages), 2)
+        self.assertGreater(reloaded.mastery["simple-classifier"], 0)
+        with store.connect() as conn:
+            row = conn.execute(
+                "SELECT COUNT(*) AS count FROM quiz_attempts WHERE session_id = ?",
+                (session_id,),
+            ).fetchone()
+        self.assertEqual(int(row["count"]), 1)
 
     def test_tts_loopback(self) -> None:
         response = tts_loopback(TTSLoopbackRequest(stage=Stage.lower_primary, text="分类就像整理玩具。"))
