@@ -10,6 +10,14 @@ bash scripts/install_docker_ubuntu.sh
 
 Then log out and log back in, or run `newgrp docker`.
 
+If the current machine has no sudo permission, use the GitHub Actions workflow instead:
+
+1. Push to GitHub.
+2. Open `Actions`.
+3. Run or inspect `Docker Build`.
+
+The workflow builds both Docker images and runs `docker compose build` on GitHub's Ubuntu runner.
+
 ```bash
 docker compose up --build
 ```

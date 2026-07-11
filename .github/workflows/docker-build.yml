@@ -1,0 +1,42 @@
+name: Docker Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  docker-build:
+    name: Build Docker images
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: false
+          tags: aieduagent-backend:ci
+          load: false
+
+      - name: Build frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: false
+          tags: aieduagent-frontend:ci
+          load: false
+
+      - name: Validate compose file
+        run: docker compose config
+
+      - name: Build compose services
+        run: docker compose build

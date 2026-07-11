@@ -131,6 +131,8 @@ VSCode 说明：
 
 详见 [docs/deployment.md](docs/deployment.md)。
 
+如果本机没有 sudo 权限，使用 GitHub Actions 的 `Docker Build` 工作流进行实际 Docker 构建验证。
+
 ## 项目文档
 
 - [需求说明](docs/requirements.md)
