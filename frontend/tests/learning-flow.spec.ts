@@ -67,3 +67,20 @@ test("student can see MVP learning workflow controls", async ({ page }) => {
   await page.getByRole("button", { name: "动画讲解" }).click();
   await expect(page.getByText("观察对象")).toBeVisible();
 });
+
+test("teacher can see analytics dashboard", async ({ page }) => {
+  await page.route("**/api/teacher/analytics", async (route) => {
+    await route.fulfill({
+      json: {
+        total_sessions: 2,
+        weak_knowledge_points: ["features"],
+        note: "SQLite-backed analytics"
+      }
+    });
+  });
+
+  await page.goto("/teacher");
+  await expect(page.getByText("教师工作台")).toBeVisible();
+  await expect(page.getByText("features")).toBeVisible();
+  await expect(page.getByRole("button", { name: "新增资源" })).toBeVisible();
+});

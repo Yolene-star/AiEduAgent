@@ -120,4 +120,9 @@ export const api = {
       `/api/learning-path?session_id=${sessionId}`
     ),
   animation: () => request<AnimationResponse>("/api/animations/classification")
+  ,
+  teacherAnalytics: () =>
+    request<{ total_sessions: number; weak_knowledge_points: string[]; note: string }>(
+      "/api/teacher/analytics"
+    )
 };
