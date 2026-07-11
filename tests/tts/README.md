@@ -14,6 +14,10 @@ The backend endpoint is:
 POST /api/tts/loopback-test
 ```
 
+The frontend also exposes browser speech playback through the Web Speech API.
+Automated tests assert the controls are present; manual testing should confirm
+that a supported browser can play and stop Chinese narration.
+
 It checks:
 
 - text is not empty

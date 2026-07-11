@@ -5,6 +5,7 @@ Every feature must include:
 - API or unit tests.
 - User behavior tests.
 - TTS loopback tests for user-facing generated text.
+- Browser speech playback checks for pages that expose spoken content.
 - Failure-mode tests for AI, TTS, and network degradation where applicable.
 - A third-party reference note when existing GitHub projects informed the design.
 

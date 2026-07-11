@@ -56,5 +56,6 @@ describe("LearningWorkspace", () => {
     expect(screen.getByText("高中")).toBeInTheDocument();
     expect(screen.getByLabelText("输入问题")).toBeInTheDocument();
     expect(screen.getByText("动画讲解")).toBeInTheDocument();
+    expect(screen.getByText("播放语音")).toBeInTheDocument();
   });
 });

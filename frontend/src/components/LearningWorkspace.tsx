@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { api, AnimationResponse, Course, QuizQuestion, Stage, StudentSession } from "@/lib/api";
 import { ClassificationAnimation } from "./ClassificationAnimation";
+import { SpeechButton } from "./SpeechButton";
 
 const stages: { id: Stage; label: string }[] = [
   { id: "lower_primary", label: "小学低年级" },
@@ -161,6 +162,7 @@ export function LearningWorkspace() {
           <h2>{course?.title ?? "开始学习"}</h2>
           <p>{selectedPoint?.intro ?? "请选择一个学段载入课程。"}</p>
           <div className="answer" aria-live="polite">{answer}</div>
+          <SpeechButton text={answer} />
           <div className="chat-input">
             <input
               aria-label="输入问题"

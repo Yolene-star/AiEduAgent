@@ -63,6 +63,7 @@ test("student can see MVP learning workflow controls", async ({ page }) => {
   await page.getByRole("button", { name: "小学高年级" }).click();
   await expect(page.getByText("人工智能如何学会分类")).toBeVisible();
   await expect(page.getByText(/TTS 回环通过/)).toBeVisible();
+  await expect(page.getByRole("button", { name: "播放语音" })).toBeVisible();
   await page.getByRole("button", { name: "动画讲解" }).click();
   await expect(page.getByText("观察对象")).toBeVisible();
 });
