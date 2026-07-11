@@ -119,6 +119,14 @@ git --git-dir=/home/yjm/AiEduAgent/.repo --work-tree=/home/yjm/AiEduAgent add .
 git --git-dir=/home/yjm/AiEduAgent/.repo --work-tree=/home/yjm/AiEduAgent commit -m "feat: bootstrap ai education assistant mvp"
 ```
 
+VSCode 说明：
+
+本仓库已配置 `.vscode/settings.json`，让 VSCode Git 扩展使用 `scripts/git-vscode` 包装脚本识别 `.repo/`。如果 VSCode 仍未显示源码管理，请执行：
+
+1. `Ctrl+Shift+P`
+2. 选择 `Developer: Reload Window`
+3. 打开 Source Control 面板
+
 ## Docker 部署
 
 详见 [docs/deployment.md](docs/deployment.md)。

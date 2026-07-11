@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+exec git --git-dir=/home/yjm/AiEduAgent/.repo --work-tree=/home/yjm/AiEduAgent "$@"
