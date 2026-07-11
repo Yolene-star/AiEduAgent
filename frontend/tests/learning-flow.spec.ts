@@ -76,6 +76,8 @@ test("student can see MVP learning workflow controls", async ({ page }) => {
   await expect(page.getByRole("button", { name: "播放语音" })).toBeVisible();
   await page.getByRole("button", { name: "动画讲解" }).click();
   await expect(page.getByText("观察对象")).toBeVisible();
+  await expect(page.getByText("第 1 / 1 步")).toBeVisible();
+  await expect(page.getByRole("button", { name: "播放", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "运行代码" }).click();
   await expect(page.getByText(/代码运行成功/)).toBeVisible();
 });

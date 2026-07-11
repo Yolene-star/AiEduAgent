@@ -223,6 +223,26 @@ button:disabled {
   gap: 8px;
 }
 
+.feature-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.feature-tags span {
+  padding: 4px 6px;
+  border-radius: 999px;
+  background: #dff1ea;
+  color: #11684f;
+  font-size: 12px;
+}
+
+.step-progress {
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .speech-tools {
   display: flex;
   flex-wrap: wrap;
