@@ -1,6 +1,8 @@
 import unittest
+from unittest.mock import Mock, patch
 
 from app.core.stages import Stage
+from app.services.dify import DifyClient
 from app.main import (
     chat,
     courses,
@@ -68,6 +70,46 @@ class ApiTests(unittest.TestCase):
         self.assertIn("小学低年级", lower.answer)
         self.assertIn("高中", high.answer)
         self.assertIn("特征", high.answer)
+
+    def test_dify_client_uses_real_api_when_configured(self) -> None:
+        client = DifyClient()
+        old_key = client.settings.dify_api_key
+        old_base_url = client.settings.dify_base_url
+        client.settings.dify_api_key = "test-key"
+        client.settings.dify_base_url = "https://dify.example/v1"
+
+        mock_response = Mock()
+        mock_response.json.return_value = {"answer": "来自 Dify 的适龄回答。"}
+        mock_response.raise_for_status.return_value = None
+
+        try:
+            with patch("app.services.dify.httpx.Client") as mock_client:
+                mock_client.return_value.__enter__.return_value.post.return_value = mock_response
+                answer, source = client.generate_answer(Stage.upper_primary, "什么是分类？", "classification")
+        finally:
+            client.settings.dify_api_key = old_key
+            client.settings.dify_base_url = old_base_url
+
+        self.assertEqual(source, "dify")
+        self.assertEqual(answer, "来自 Dify 的适龄回答。")
+        call = mock_client.return_value.__enter__.return_value.post.call_args
+        self.assertEqual(call.kwargs["headers"]["Authorization"], "Bearer test-key")
+        self.assertEqual(call.kwargs["json"]["inputs"]["stage"], "小学高年级")
+
+    def test_dify_client_falls_back_when_api_fails(self) -> None:
+        client = DifyClient()
+        old_key = client.settings.dify_api_key
+        client.settings.dify_api_key = "test-key"
+
+        try:
+            with patch("app.services.dify.httpx.Client") as mock_client:
+                mock_client.return_value.__enter__.return_value.post.side_effect = http_error()
+                answer, source = client.generate_answer(Stage.lower_primary, "什么是分类？", "classification")
+        finally:
+            client.settings.dify_api_key = old_key
+
+        self.assertEqual(source, "dify-error-fallback")
+        self.assertIn("小学低年级", answer)
 
     def test_quiz_mastery_and_recommendation_flow(self) -> None:
         session_id = self.create_session(Stage.upper_primary)
@@ -144,3 +186,9 @@ class ApiTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def http_error():
+    import httpx
+
+    return httpx.ConnectError("network unavailable")

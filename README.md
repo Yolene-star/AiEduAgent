@@ -72,6 +72,17 @@ cd frontend
 npm run test:e2e
 ```
 
+## Dify 配置
+
+后端通过 `/api/chat` 统一代理 Dify，前端不接触密钥。在 `.env` 中配置：
+
+```bash
+DIFY_BASE_URL=https://api.dify.ai/v1
+DIFY_API_KEY=你的 Dify 应用 API Key
+```
+
+未配置 API Key、网络失败、代理缺依赖或 Dify 返回空答案时，系统会自动降级为本地适龄教学回答，保证演示链路不中断。
+
 ## Git 使用说明
 
 当前运行环境会把 `.git` 特殊挂载为只读目录，因此本项目使用分离 Git 目录 `.repo/`。初始化命令：

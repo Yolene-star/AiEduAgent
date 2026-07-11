@@ -1,6 +1,7 @@
 from app.core.config import get_settings
 from app.core.stages import Stage, STAGE_LABELS, STAGE_RULES
 from app.data.curriculum import get_knowledge_point
+import httpx
 
 
 class DifyClient:
@@ -18,9 +19,38 @@ class DifyClient:
     def generate_answer(self, stage: Stage, message: str, knowledge_point_id: str) -> tuple[str, str]:
         if not self.is_configured():
             return self._fallback_answer(stage, message, knowledge_point_id), "local-fallback"
-        # Network calls are intentionally isolated here. The implementation can be
-        # swapped for httpx when API credentials are available.
-        return self._fallback_answer(stage, message, knowledge_point_id), "dify-adapter-fallback"
+        try:
+            return self._request_dify(stage, message, knowledge_point_id), "dify"
+        except (httpx.HTTPError, ImportError, KeyError, ValueError):
+            return self._fallback_answer(stage, message, knowledge_point_id), "dify-error-fallback"
+
+    def _request_dify(self, stage: Stage, message: str, knowledge_point_id: str) -> str:
+        point = get_knowledge_point(knowledge_point_id, stage)
+        payload = {
+            "inputs": {
+                "stage": STAGE_LABELS[stage],
+                "stage_rule": STAGE_RULES[stage]["style"],
+                "knowledge_point_id": knowledge_point_id,
+                "knowledge_point_title": point["title"] if point else "",
+                "knowledge_point_intro": point["intro"] if point else "",
+            },
+            "query": message,
+            "response_mode": "blocking",
+            "user": f"aieduagent-{stage.value}",
+        }
+        url = self.settings.dify_base_url.rstrip("/") + "/chat-messages"
+        headers = {
+            "Authorization": f"Bearer {self.settings.dify_api_key}",
+            "Content-Type": "application/json",
+        }
+        with httpx.Client(timeout=self.settings.dify_timeout_seconds) as client:
+            response = client.post(url, headers=headers, json=payload)
+            response.raise_for_status()
+            data = response.json()
+        answer = str(data["answer"]).strip()
+        if not answer:
+            raise ValueError("empty Dify answer")
+        return answer
 
     def _fallback_answer(self, stage: Stage, message: str, knowledge_point_id: str) -> str:
         point = get_knowledge_point(knowledge_point_id, stage)
