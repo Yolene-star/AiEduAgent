@@ -2,6 +2,14 @@
 
 ## Local Docker Compose
 
+If Docker is not installed on Ubuntu, run:
+
+```bash
+bash scripts/install_docker_ubuntu.sh
+```
+
+Then log out and log back in, or run `newgrp docker`.
+
 ```bash
 docker compose up --build
 ```
