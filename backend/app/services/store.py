@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from pathlib import Path
 import json
+import os
 import sqlite3
 from uuid import uuid4
 from app.core.stages import Stage, STAGE_LABELS
@@ -17,7 +18,9 @@ class SessionState:
 
 class SQLiteStore:
     def __init__(self, db_path: str | Path | None = None) -> None:
-        self.db_path = Path(db_path or Path(__file__).resolve().parents[2] / "aieduagent.db")
+        configured_path = os.getenv("SQLITE_DB_PATH")
+        self.db_path = Path(db_path or configured_path or Path(__file__).resolve().parents[2] / "aieduagent.db")
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._init_db()
 
     def connect(self) -> sqlite3.Connection:

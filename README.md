@@ -119,6 +119,10 @@ git --git-dir=/home/yjm/AiEduAgent/.repo --work-tree=/home/yjm/AiEduAgent add .
 git --git-dir=/home/yjm/AiEduAgent/.repo --work-tree=/home/yjm/AiEduAgent commit -m "feat: bootstrap ai education assistant mvp"
 ```
 
+## Docker 部署
+
+详见 [docs/deployment.md](docs/deployment.md)。
+
 ## 开源参考
 
 详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
