@@ -46,7 +46,7 @@ class ApiTests(unittest.TestCase):
 
         course = courses("lower_primary")
         self.assertEqual(course.id, "ai-classification")
-        self.assertGreaterEqual(len(course.knowledge_points), 4)
+        self.assertGreaterEqual(len(course.knowledge_points), 10)
         self.assertIn("整理玩具", str(course.knowledge_points[0]["intro"]))
 
     def test_chat_uses_stage_adaptive_fallback(self) -> None:
