@@ -123,6 +123,12 @@ git --git-dir=/home/yjm/AiEduAgent/.repo --work-tree=/home/yjm/AiEduAgent commit
 
 详见 [docs/deployment.md](docs/deployment.md)。
 
+## 项目文档
+
+- [需求说明](docs/requirements.md)
+- [系统架构](docs/architecture.md)
+- [演示脚本](docs/demo-script.md)
+
 ## 开源参考
 
 详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
