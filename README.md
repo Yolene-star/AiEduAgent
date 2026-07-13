@@ -1,144 +1,56 @@
 # AiEduAgent
 
-多模态 K12 人工智能通识课教学助手。当前版本先实现可运行 MVP 闭环：
+多模态 K12 人工智能通识课教学助手项目工作区。
 
-1. 学生选择学段。
-2. 进入“人工智能如何学会分类”课程。
-3. 发起教学对话。
-4. 获得适龄回答与来源。
-5. 生成并提交练习。
-6. 更新掌握度。
-7. 获得下一步推荐。
-8. 对关键文本执行 Mock TTS 回环测试。
+当前仓库已清空到“阶段 0：项目控制面与安全基线”。这里暂不保留前端、后端、数据库、Docker、测试或模型接入代码，后续将严格按照 `K12_AI_Tutor_Staged_Practice_Harness.md` 分阶段重建。
 
-## 技术栈
+## 当前保留内容
 
-- Frontend: Next.js + React + TypeScript
-- Backend: FastAPI + Python 3.10
-- Persistence: SQLite during local development
-- AI/RAG: Dify API adapter with local fallback
-- Tests: backend unittest/pytest-compatible layout, frontend Vitest, behavior tests with Playwright
-- TTS: Mock loopback first, real provider later
+- `K12_AI_Tutor_Staged_Practice_Harness.md`：分阶段实践步骤与 Harness 手册。
+- `多模态K12人工智能教学助手项目开发与开源成果借鉴计划书.docx`：项目规划与开源成果借鉴材料。
+- `.gitignore`：密钥、依赖、缓存、数据库和构建产物忽略规则。
+- `.env.example`：环境变量占位模板，不包含真实密钥。
+- `artifacts/stage-00/`：阶段 0 证据目录入口，版本检查结果后续写入这里。
 
-## 后端启动
+## 阶段顺序
 
-```bash
-cd backend
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
+1. 阶段 0：项目控制面与安全基线。
+2. 阶段 1：FastAPI `/health` 最小后端。
+3. 阶段 2：前后端最小垂直切片。
+4. 阶段 3：模型适配层，先 Fake 模型，再真实 API。
+5. 阶段 4：U1 五张知识卡、检索与来源追踪。
+6. 阶段 5 以后：四学段适配、练习、多模态模板、掌握度、部署演示。
 
-如果当前环境已安装 FastAPI，也可以直接运行：
+每次只进入一个阶段。上一个阶段的退出闸门全部通过后，再开始下一个阶段。
+
+## 阶段 0 待办
+
+按手册要求，你需要手动执行并保存以下版本信息：
 
 ```bash
-cd backend
-python3 -m unittest discover -s tests
+git --version
+python3 --version
+node --version
+npm --version
 ```
 
-后端会在 `backend/aieduagent.db` 创建本地 SQLite 数据库。该文件是运行产物，不会进入 Git。
+将输出保存到：
 
-## 前端启动
+```text
+artifacts/stage-00/versions.txt
+```
+
+确认 `.env` 不存在，`.env.example` 中没有真实密钥，然后完成一次安全提交。
+
+## Git 使用
+
+当前运行环境使用分离 Git 目录 `.repo/`。常用命令如下：
 
 ```bash
-cd frontend
-npm install
-npm run dev
+git --git-dir=.repo --work-tree=. status --short --branch
+git --git-dir=.repo --work-tree=. add .
+git --git-dir=.repo --work-tree=. diff --cached
+git --git-dir=.repo --work-tree=. commit -m "chore: reset to stage 0 baseline"
 ```
 
-默认读取 `NEXT_PUBLIC_API_BASE_URL`，未设置时使用 `http://localhost:8000`。
-
-## 测试
-
-后端：
-
-```bash
-cd backend
-python3 -m unittest discover -s tests
-```
-
-真实 HTTP 冒烟测试：
-
-```bash
-python3 scripts/http_smoke.py
-```
-
-前端：
-
-```bash
-cd frontend
-npm test
-```
-
-行为测试：
-
-```bash
-cd frontend
-npm run test:e2e
-```
-
-## Dify 配置
-
-后端通过 `/api/chat` 统一代理 Dify，前端不接触密钥。在 `.env` 中配置：
-
-```bash
-DIFY_BASE_URL=https://api.dify.ai/v1
-DIFY_API_KEY=你的 Dify 应用 API Key
-```
-
-未配置 API Key、网络失败、代理缺依赖或 Dify 返回空答案时，系统会自动降级为本地适龄教学回答，保证演示链路不中断。
-
-## Judge0 配置
-
-在线编程通过 `/api/code/run` 统一代理。开发期未配置 Judge0 时使用安全 fallback，不会在本机直接执行学生代码。
-
-```bash
-JUDGE0_BASE_URL=https://your-judge0-host
-JUDGE0_API_KEY=可选
-```
-
-## Git 使用说明
-
-当前运行环境会把 `.git` 特殊挂载为只读目录，因此本项目使用分离 Git 目录 `.repo/`。初始化命令：
-
-```bash
-git --git-dir=/home/yjm/AiEduAgent/.repo --work-tree=/home/yjm/AiEduAgent init
-```
-
-查看状态：
-
-```bash
-git --git-dir=/home/yjm/AiEduAgent/.repo --work-tree=/home/yjm/AiEduAgent status --short
-```
-
-提交：
-
-```bash
-git --git-dir=/home/yjm/AiEduAgent/.repo --work-tree=/home/yjm/AiEduAgent add .
-git --git-dir=/home/yjm/AiEduAgent/.repo --work-tree=/home/yjm/AiEduAgent commit -m "feat: bootstrap ai education assistant mvp"
-```
-
-VSCode 说明：
-
-本仓库已配置 `.vscode/settings.json`，让 VSCode Git 扩展使用 `scripts/git-vscode` 包装脚本识别 `.repo/`。如果 VSCode 仍未显示源码管理，请执行：
-
-1. `Ctrl+Shift+P`
-2. 选择 `Developer: Reload Window`
-3. 打开 Source Control 面板
-
-## Docker 部署
-
-详见 [docs/deployment.md](docs/deployment.md)。
-
-如果本机没有 sudo 权限，使用 GitHub Actions 的 `Docker Build` 工作流进行实际 Docker 构建验证。
-
-## 项目文档
-
-- [需求说明](docs/requirements.md)
-- [系统架构](docs/architecture.md)
-- [演示脚本](docs/demo-script.md)
-
-## 开源参考
-
-详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+提交前必须检查暂存内容，确认没有 `.env`、密钥、数据库、依赖目录或构建产物。

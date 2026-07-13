@@ -1,22 +1,32 @@
 .env
 .env.*
 !.env.example
+
 .repo/
+
+.venv/
+venv/
+backend/.venv/
+frontend/node_modules/
+node_modules/
 
 __pycache__/
 *.py[cod]
 .pytest_cache/
 .coverage
 htmlcov/
-backend/.venv/
-backend/*.db
 
-node_modules/
+*.db
+*.sqlite
+*.sqlite3
+
 .next/
+dist/
+build/
 out/
 coverage/
 playwright-report/
 test-results/
 
-.DS_Store
 *.log
+.DS_Store
