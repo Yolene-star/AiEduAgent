@@ -1,0 +1,26 @@
+Stage 2 verification results
+
+Backend contract:
+- Command: /home/yjm/miniconda3/envs/aieduagent-py312/bin/python -m pytest backend/tests -q
+- Result: 6 passed in 0.52s
+
+Frontend component and app tests:
+- Command: corepack pnpm test
+- Result: 3 test files passed, 4 tests passed
+
+Frontend build:
+- Command: corepack pnpm build
+- Result: vue-tsc and vite build passed
+
+Real HTTP check:
+- Server: python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
+- POST /api/v1/chat with {"stage":"lower_primary","message":"AI怎么认识小猫？"} returned HTTP 200
+- Response:
+  {"answer":"它会从许多带有名字的小猫图片中学习共同特点。","check_question":"图片旁边写着‘小猫’，这个名字在训练中叫什么？","used_card_ids":["U1-C02","U1-C04"],"next_actions":["answer_check","open_storybook"]}
+- Invalid request missing message returned HTTP 422
+- CORS preflight from http://127.0.0.1:5173 returned HTTP 200
+
+Notes:
+- Real model APIs are intentionally not used in Stage 2.
+- npm install repeatedly timed out in this environment, so the frontend uses Corepack pnpm.
+- Browser DevTools Network verification remains an optional manual check for the user when running both servers locally.

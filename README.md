@@ -81,6 +81,47 @@ conda run -n aieduagent-py312 python -m pytest backend/tests/test_health.py -q
 
 说明：当前环境中 Starlette `TestClient` 会在后台 portal 初始化时卡住，因此阶段 1 测试使用 `httpx.ASGITransport` 直接调用真实 ASGI app。它仍然会经过 FastAPI 路由和中间件，不是测试假函数。
 
+## 阶段 2 前后端垂直切片
+
+阶段 2 增加最小聊天链路：
+
+- 后端接口：`POST /api/v1/chat`
+- 固定输入：`{"stage":"lower_primary","message":"AI怎么认识小猫？"}`
+- 固定假回答：由 `FakeModelProvider` 返回
+- 前端页面：学段选择、问题输入、发送、回答、来源占位、错误提示
+- 验收证据：`artifacts/stage-02/results.txt`
+
+后端启动：
+
+```bash
+conda activate aieduagent-py312
+python -m uvicorn backend.app.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+前端启动：
+
+```bash
+cd frontend
+corepack pnpm install
+corepack pnpm dev
+```
+
+前端检查：
+
+```bash
+cd frontend
+corepack pnpm test
+corepack pnpm build
+```
+
+后端检查：
+
+```bash
+conda run -n aieduagent-py312 python -m pytest backend/tests -q
+```
+
+说明：本机 `npm install` 在解析依赖树时多次超时，阶段 2 改用 Corepack 管理的 pnpm，并提交 `pnpm-lock.yaml`。
+
 ## Git 使用
 
 当前运行环境使用分离 Git 目录 `.repo/`。常用命令如下：
