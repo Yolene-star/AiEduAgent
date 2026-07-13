@@ -1,0 +1,6 @@
+git version 2.25.1
+Python 3.10.19
+node v22.11.0
+npm 10.9.0
+
+Note: the practice manual recommends Python 3.12. This machine currently has Python 3.10.19 available through python3. Decide whether to install Python 3.12 before Stage 1.

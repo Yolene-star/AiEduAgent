@@ -10,7 +10,8 @@
 - `多模态K12人工智能教学助手项目开发与开源成果借鉴计划书.docx`：项目规划与开源成果借鉴材料。
 - `.gitignore`：密钥、依赖、缓存、数据库和构建产物忽略规则。
 - `.env.example`：环境变量占位模板，不包含真实密钥。
-- `artifacts/stage-00/`：阶段 0 证据目录入口，版本检查结果后续写入这里。
+- `docs/decisions.md`：阶段 0 技术选型和安全边界记录。
+- `artifacts/stage-00/versions.txt`：阶段 0 工具版本证据。
 
 ## 阶段顺序
 
@@ -23,24 +24,16 @@
 
 每次只进入一个阶段。上一个阶段的退出闸门全部通过后，再开始下一个阶段。
 
-## 阶段 0 待办
+## 阶段 0 当前状态
 
-按手册要求，你需要手动执行并保存以下版本信息：
+- 已保存工具版本到 `artifacts/stage-00/versions.txt`。
+- 已确认当前仓库没有真实 `.env`。
+- 已创建 `docs/decisions.md`。
+- 已保留分离 Git 目录 `.repo/`。
+- 待你在 GitHub 网页确认远程仓库为 Private。
+- 待你决定是否在阶段 1 前安装 Python 3.12；当前机器 `python3` 是 3.10.19。
 
-```bash
-git --version
-python3 --version
-node --version
-npm --version
-```
-
-将输出保存到：
-
-```text
-artifacts/stage-00/versions.txt
-```
-
-确认 `.env` 不存在，`.env.example` 中没有真实密钥，然后完成一次安全提交。
+阶段 0 完成后，再进入阶段 1：FastAPI `/health` 最小后端。
 
 ## Git 使用
 
@@ -50,7 +43,7 @@ artifacts/stage-00/versions.txt
 git --git-dir=.repo --work-tree=. status --short --branch
 git --git-dir=.repo --work-tree=. add .
 git --git-dir=.repo --work-tree=. diff --cached
-git --git-dir=.repo --work-tree=. commit -m "chore: reset to stage 0 baseline"
+git --git-dir=.repo --work-tree=. commit -m "chore: complete stage 0 safety baseline"
 ```
 
 提交前必须检查暂存内容，确认没有 `.env`、密钥、数据库、依赖目录或构建产物。
