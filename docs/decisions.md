@@ -14,6 +14,18 @@ FastAPI 适合快速构建 JSON API，自动生成接口文档，便于用 pytes
 
 阶段 0 不创建 `backend/` 目录。进入阶段 1 时只实现 `/health`。
 
+## 使用 conda 固定 Python 3.12
+
+实践手册建议 Python 3.12。当前系统 `python3` 是 3.10.19，因此创建专用 conda 环境 `aieduagent-py312`，版本为 Python 3.12.13。
+
+后续后端开发默认先执行：
+
+```bash
+conda activate aieduagent-py312
+```
+
+所有 Python 依赖都安装在该环境中，不安装到系统 Python。
+
 ## 选择 SQLite 作为首版本地数据存储
 
 SQLite 不需要独立数据库服务，适合单人开发和本地演示。后续如果需要多人并发、部署或向量检索，再考虑 PostgreSQL / pgvector。

@@ -30,10 +30,25 @@
 - 已确认当前仓库没有真实 `.env`。
 - 已创建 `docs/decisions.md`。
 - 已保留分离 Git 目录 `.repo/`。
+- 已创建 Python 3.12 conda 环境：`aieduagent-py312`。
 - 待你在 GitHub 网页确认远程仓库为 Private。
-- 待你决定是否在阶段 1 前安装 Python 3.12；当前机器 `python3` 是 3.10.19。
 
 阶段 0 完成后，再进入阶段 1：FastAPI `/health` 最小后端。
+
+## Python 环境
+
+手册要求使用 Python 3.12。本机系统 `python3` 是 3.10.19，因此项目使用专用 conda 环境：
+
+```bash
+conda activate aieduagent-py312
+python --version
+```
+
+预期输出：
+
+```text
+Python 3.12.13
+```
 
 ## Git 使用
 

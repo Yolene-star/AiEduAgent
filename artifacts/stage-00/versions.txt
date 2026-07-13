@@ -1,6 +1,9 @@
 git version 2.25.1
-Python 3.10.19
+system python3: Python 3.10.19
+conda env aieduagent-py312: Python 3.12.13
+conda env aieduagent-py312 pip: pip 26.1.2
 node v22.11.0
 npm 10.9.0
 
-Note: the practice manual recommends Python 3.12. This machine currently has Python 3.10.19 available through python3. Decide whether to install Python 3.12 before Stage 1.
+Python baseline decision: follow the practice manual with conda env aieduagent-py312.
+Activation command: conda activate aieduagent-py312
