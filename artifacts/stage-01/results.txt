@@ -1,0 +1,24 @@
+Stage 1 verification results
+
+Environment:
+- Python: /home/yjm/miniconda3/envs/aieduagent-py312/bin/python
+- Backend app: backend.app.main:app
+
+Automated test:
+- Command: /home/yjm/miniconda3/envs/aieduagent-py312/bin/python -m pytest backend/tests/test_health.py -q
+- Result: 3 passed in 0.37s
+
+Real HTTP server check:
+- Command: python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
+- GET /health: HTTP 200, {"status":"ok"}
+- GET /docs: HTTP 200
+- After server stop, GET /health failed with curl status 000
+
+Failure rehearsal:
+- Temporary test expected {"status":"wrong"} from /health.
+- Result: pytest failed as expected with AssertionError.
+
+Notes:
+- In this environment, Starlette TestClient hangs while initializing its background portal.
+- Stage 1 tests use httpx.ASGITransport against the real FastAPI ASGI app.
+- Running uvicorn inside the filesystem sandbox could not bind to local ports; the real HTTP check passed outside the sandbox.

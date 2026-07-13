@@ -50,6 +50,37 @@ python --version
 Python 3.12.13
 ```
 
+## 阶段 1 后端启动
+
+阶段 1 只实现最小 FastAPI 后端：
+
+- 健康检查：`GET /health`
+- 接口文档：`GET /docs`
+- 测试文件：`backend/tests/test_health.py`
+- 固定启动脚本：`scripts/dev-backend.ps1`
+- 验收证据：`artifacts/stage-01/results.txt`
+
+在仓库根目录运行：
+
+```bash
+conda activate aieduagent-py312
+python -m uvicorn backend.app.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+或使用 PowerShell 脚本：
+
+```powershell
+.\scripts\dev-backend.ps1
+```
+
+运行测试：
+
+```bash
+conda run -n aieduagent-py312 python -m pytest backend/tests/test_health.py -q
+```
+
+说明：当前环境中 Starlette `TestClient` 会在后台 portal 初始化时卡住，因此阶段 1 测试使用 `httpx.ASGITransport` 直接调用真实 ASGI app。它仍然会经过 FastAPI 路由和中间件，不是测试假函数。
+
 ## Git 使用
 
 当前运行环境使用分离 Git 目录 `.repo/`。常用命令如下：
