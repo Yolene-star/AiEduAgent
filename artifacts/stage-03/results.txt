@@ -1,0 +1,35 @@
+Stage 3 verification results
+
+Backend provider tests:
+- Command: /home/yjm/miniconda3/envs/aieduagent-py312/bin/python -m pytest backend/tests -q
+- Result: 18 passed in 0.52s
+
+Frontend regression:
+- Command: corepack pnpm test
+- Result: 3 test files passed, 4 tests passed
+- Command: corepack pnpm build
+- Result: vue-tsc and vite build passed
+
+Runtime checks:
+- MODEL_PROVIDER=fake returned the fixed Stage 2 answer.
+- MODEL_PROVIDER=fake_timeout returned the controlled fallback answer.
+
+Failure injection coverage:
+- Fake timeout injection has endpoint fallback coverage.
+- Fake rate-limit injection has endpoint fallback coverage.
+- Fake invalid-JSON injection has endpoint fallback coverage.
+- Real provider timeout is converted to ModelProviderError(status="timeout").
+- Real provider rate limit retries once and then succeeds in the mock test.
+- Real provider invalid JSON is converted to ModelProviderError(status="invalid_json").
+- Real provider empty answer fails Pydantic validation.
+- Factory rejects real mode without a usable API key.
+- Factory constructs RealModelProvider from environment variables.
+
+Security:
+- Tests use FakeProvider or httpx.MockTransport only, so no API fee is produced.
+- No real LLM key was configured or committed.
+- Real provider logs provider name, model alias, status, duration, and request ID, not the API key.
+
+Notes:
+- RealModelProvider expects an OpenAI-compatible /chat/completions endpoint.
+- A live external model call was not performed because no real key should be committed and Stage 3 tests must not produce API cost.

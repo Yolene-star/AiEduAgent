@@ -1,8 +1,14 @@
 import asyncio
 
 import httpx
+import pytest
 
 from backend.app.main import app
+
+
+@pytest.fixture(autouse=True)
+def force_fake_provider(monkeypatch):
+    monkeypatch.setenv("MODEL_PROVIDER", "fake")
 
 
 def request(method: str, path: str, **kwargs):
@@ -50,3 +56,22 @@ def test_chat_rejects_unknown_stage():
     )
 
     assert response.status_code == 422
+
+
+@pytest.mark.parametrize(
+    "provider",
+    ["fake_timeout", "fake_rate_limit", "fake_invalid_json"],
+)
+def test_chat_falls_back_when_provider_fails(monkeypatch, provider):
+    monkeypatch.setenv("MODEL_PROVIDER", provider)
+
+    response = request(
+        "POST",
+        "/api/v1/chat",
+        json={"stage": "lower_primary", "message": "AI怎么认识小猫？"},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["answer"].startswith("模型暂时不可用")
+    assert body["next_actions"] == ["retry_later", "answer_check"]

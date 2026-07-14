@@ -122,6 +122,40 @@ conda run -n aieduagent-py312 python -m pytest backend/tests -q
 
 说明：本机 `npm install` 在解析依赖树时多次超时，阶段 2 改用 Corepack 管理的 pnpm，并提交 `pnpm-lock.yaml`。
 
+## 阶段 3 模型适配层
+
+阶段 3 将模型调用封装到 `backend/app/providers/`：
+
+- `ModelProvider`：统一 `generate(request) -> response` 接口。
+- `FakeModelProvider`：默认离线演示和测试 provider，不需要密钥。
+- `RealModelProvider`：读取环境变量并调用 OpenAI-compatible `/chat/completions` 接口。
+- `FakeModelProvider` 失败注入：`fake_timeout`、`fake_rate_limit`、`fake_invalid_json`。
+- 验收证据：`artifacts/stage-03/results.txt`
+
+默认不配置密钥即可运行：
+
+```bash
+MODEL_PROVIDER=fake python -m uvicorn backend.app.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+真实模型只通过环境变量切换，前端不用改：
+
+```bash
+MODEL_PROVIDER=real
+LLM_MODEL=replace_me
+LLM_API_KEY=replace_me
+LLM_BASE_URL=https://api.openai.com/v1
+LLM_TIMEOUT_SECONDS=20
+```
+
+注意：真实密钥只能写入本地 `.env` 或终端环境变量，不能提交到 Git。
+
+阶段 3 后端测试：
+
+```bash
+conda run -n aieduagent-py312 python -m pytest backend/tests -q
+```
+
 ## Git 使用
 
 当前运行环境使用分离 Git 目录 `.repo/`。常用命令如下：

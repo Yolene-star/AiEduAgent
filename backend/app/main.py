@@ -1,12 +1,18 @@
 import logging
 import time
-from typing import Literal
 from uuid import uuid4
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field
+
+from backend.app.providers import ModelProviderError, get_model_provider
+from backend.app.schemas import (
+    ChatRequest,
+    ChatResponse,
+    TutorGenerationRequest,
+    generation_to_chat_response,
+)
 
 
 logging.basicConfig(
@@ -15,7 +21,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("aieduagent")
 
-app = FastAPI(title="AiEduAgent Backend", version="0.2.0")
+app = FastAPI(title="AiEduAgent Backend", version="0.3.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -29,32 +35,13 @@ app.add_middleware(
 )
 
 
-Stage = Literal["lower_primary", "upper_primary", "middle_school", "high_school"]
-
-
-class ChatRequest(BaseModel):
-    stage: Stage
-    message: str = Field(min_length=1, max_length=500)
-
-
-class ChatResponse(BaseModel):
-    answer: str
-    check_question: str
-    used_card_ids: list[str]
-    next_actions: list[str]
-
-
-class FakeModelProvider:
-    def answer(self, request: ChatRequest) -> ChatResponse:
-        return ChatResponse(
-            answer="它会从许多带有名字的小猫图片中学习共同特点。",
-            check_question="图片旁边写着‘小猫’，这个名字在训练中叫什么？",
-            used_card_ids=["U1-C02", "U1-C04"],
-            next_actions=["answer_check", "open_storybook"],
-        )
-
-
-fake_model_provider = FakeModelProvider()
+def fallback_chat_response() -> ChatResponse:
+    return ChatResponse(
+        answer="模型暂时不可用，我先用固定知识卡帮你复习：机器会从带标签的图片中学习共同特点。",
+        check_question="图片旁边写着‘小猫’，这个名字在训练中叫什么？",
+        used_card_ids=["U1-C02", "U1-C04"],
+        next_actions=["retry_later", "answer_check"],
+    )
 
 
 @app.middleware("http")
@@ -96,5 +83,39 @@ async def health():
 
 
 @app.post("/api/v1/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
-    return fake_model_provider.answer(request)
+async def chat(request: ChatRequest, http_request: Request):
+    started_at = time.perf_counter()
+    provider = None
+    request_id = http_request.headers.get("x-request-id", str(uuid4()))
+    generation_request = TutorGenerationRequest(
+        stage=request.stage,
+        message=request.message,
+        request_id=request_id,
+    )
+
+    try:
+        provider = get_model_provider()
+        result = await provider.generate(generation_request)
+        status = "ok"
+        response = generation_to_chat_response(result)
+    except ModelProviderError as error:
+        status = error.status
+        logger.warning(
+            "model_provider=%s model_alias=%s status=%s request_id=%s",
+            getattr(provider, "provider_name", "unknown"),
+            getattr(provider, "model_alias", "unknown"),
+            status,
+            request_id,
+        )
+        response = fallback_chat_response()
+
+    duration_ms = round((time.perf_counter() - started_at) * 1000, 2)
+    logger.info(
+        "model_provider=%s model_alias=%s status=%s duration_ms=%s request_id=%s",
+        getattr(provider, "provider_name", "unknown"),
+        getattr(provider, "model_alias", "unknown"),
+        status,
+        duration_ms,
+        request_id,
+    )
+    return response
