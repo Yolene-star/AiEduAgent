@@ -1,0 +1,22 @@
+[
+  {"id": "G01", "question": "像素是什么？", "expected_card_ids": ["U1-C01"]},
+  {"id": "G02", "question": "图片为什么能被电脑看成数字？", "expected_card_ids": ["U1-C01"]},
+  {"id": "G03", "question": "RGB颜色值和像素有什么关系？", "expected_card_ids": ["U1-C01"]},
+  {"id": "G04", "question": "AI怎么知道这张图是小猫？", "expected_card_ids": ["U1-C02", "U1-C04"]},
+  {"id": "G05", "question": "图片旁边写着小猫，这个名字叫什么？", "expected_card_ids": ["U1-C02"]},
+  {"id": "G06", "question": "标注错了会影响模型吗？", "expected_card_ids": ["U1-C02", "U1-C03"]},
+  {"id": "G07", "question": "训练数据是什么？", "expected_card_ids": ["U1-C03"]},
+  {"id": "G08", "question": "为什么训练图片要多一些、丰富一些？", "expected_card_ids": ["U1-C03"]},
+  {"id": "G09", "question": "模型是不是背下了所有图片？", "expected_card_ids": ["U1-C03", "U1-C04"]},
+  {"id": "G10", "question": "什么是图像分类？", "expected_card_ids": ["U1-C04"]},
+  {"id": "G11", "question": "分类器怎么辨认图片？", "expected_card_ids": ["U1-C04"]},
+  {"id": "G12", "question": "机器识别图片会不会出错？", "expected_card_ids": ["U1-C04", "U1-C05"]},
+  {"id": "G13", "question": "训练集是做什么的？", "expected_card_ids": ["U1-C05"]},
+  {"id": "G14", "question": "测试集为什么不能偷看？", "expected_card_ids": ["U1-C05"]},
+  {"id": "G15", "question": "验证集和测试集有什么区别？", "expected_card_ids": ["U1-C05"]},
+  {"id": "G16", "question": "训练集和测试集怎么划分？", "expected_card_ids": ["U1-C05"]},
+  {"id": "G17", "question": "如果只给模型看橘猫，它能认识黑猫吗？", "expected_card_ids": ["U1-C03", "U1-C04"]},
+  {"id": "G18", "question": "AI识图需要标签和训练数据吗？", "expected_card_ids": ["U1-C02", "U1-C03", "U1-C04"]},
+  {"id": "G19", "question": "怎样检查识图模型有没有学会？", "expected_card_ids": ["U1-C04", "U1-C05"]},
+  {"id": "G20", "question": "今天午饭吃什么？", "expected_card_ids": []}
+]

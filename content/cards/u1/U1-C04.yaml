@@ -1,0 +1,46 @@
+id: U1-C04
+title: 图像分类
+version: 1
+status: model_checked
+prerequisites:
+  - U1-C01
+  - U1-C02
+  - U1-C03
+aliases:
+  - 图像分类
+  - 图片分类
+  - 识图
+  - 辨认图片
+  - 分类器
+  - 机器识别图片
+  - 认识图片
+  - 认识小猫
+keywords:
+  - 分类
+  - 图像
+  - 图
+  - 图片
+  - 识别
+  - 类别
+  - 知道
+  - 认识
+  - 橘猫
+  - 黑猫
+canonical_claims:
+  - 图像分类的目标是给整张图片预测一个或多个类别。
+  - 训练好的分类模型可以对新的图片进行类别预测。
+  - 图像分类通常需要图片数据、对应标签、训练过程和评估过程。
+misconceptions:
+  - 图像分类不是让模型真正像人一样理解世界，而是根据数据学习类别判断规律。
+  - 分类模型给出的结果可能出错，需要用测试数据和实际使用反馈检查。
+sources:
+  - title: TensorFlow Image Classification
+    url: https://www.tensorflow.org/tutorials/images/classification
+    license: CC BY 4.0
+  - title: Google Supervised Learning
+    url: https://developers.google.com/machine-learning/intro-to-ml/supervised
+    license: CC BY 4.0
+review:
+  evidence_audit: TensorFlow source directly covers image classification workflow; Google source supports supervised model training/evaluation/inference.
+  rebuttal_audit: Avoid overstating model understanding; keep focus on category prediction.
+  reviewed_at: "2026-07-14"

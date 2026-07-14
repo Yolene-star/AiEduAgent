@@ -46,7 +46,7 @@ async function submitQuestion() {
       <p v-if="errorMessage" class="error" role="alert">{{ errorMessage }}</p>
 
       <AnswerCard v-if="answer" :answer="answer" />
-      <SourceList v-if="answer" :card-ids="answer.used_card_ids" />
+      <SourceList v-if="answer" :card-ids="answer.used_card_ids" :sources="answer.sources" />
     </section>
   </main>
 </template>

@@ -1,0 +1,34 @@
+id: U1-C01
+title: 像素
+version: 1
+status: model_checked
+prerequisites: []
+aliases:
+  - 像素
+  - pixel
+  - 图片小格子
+  - 图像点
+keywords:
+  - 像素
+  - 图片
+  - 颜色值
+  - RGB
+  - 坐标
+canonical_claims:
+  - 数字图像可以看作由许多像素组成的网格。
+  - 每个像素保存颜色信息，彩色图像常用多个通道表示颜色。
+  - 程序可以按坐标读取或修改图像中的像素值。
+misconceptions:
+  - 像素不是小灯泡本身，而是数字图像中的最小采样单位之一。
+  - 图片越大不一定越清晰，清晰度还受拍摄质量、压缩和显示设备影响。
+sources:
+  - title: OpenCV Basic Operations on Images
+    url: https://docs.opencv.org/4.x/d3/df2/tutorial_py_basic_ops.html
+    license: Apache 2.0 docs/code policy
+  - title: Google Supervised Learning
+    url: https://developers.google.com/machine-learning/intro-to-ml/supervised
+    license: CC BY 4.0
+review:
+  evidence_audit: OpenCV source supports reading pixel values and image array operations; Google source supports images as pixel values in ML data.
+  rebuttal_audit: Avoid telling younger students that a pixel is a physical dot on every screen; keep it as a digital image unit.
+  reviewed_at: "2026-07-14"

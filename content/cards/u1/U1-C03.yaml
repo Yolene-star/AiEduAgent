@@ -1,0 +1,41 @@
+id: U1-C03
+title: 训练数据
+version: 1
+status: model_checked
+prerequisites:
+  - U1-C02
+aliases:
+  - 训练数据
+  - training data
+  - 数据集
+  - 样本
+  - 例子
+keywords:
+  - 训练
+  - 数据
+  - 数据集
+  - 样本
+  - 多样性
+  - 影响
+  - 背下
+  - 橘猫
+  - 黑猫
+  - 覆盖
+canonical_claims:
+  - 训练数据是模型学习规律时使用的样本集合。
+  - 数据集的规模和多样性会影响模型能否在新样本上表现良好。
+  - 如果训练数据覆盖范围太窄，模型可能在没见过的情况上表现很差。
+misconceptions:
+  - 数据多并不自动等于数据好，数据是否多样和准确同样重要。
+  - 模型不是背下每张图片，而是从训练样本中学习可用于预测的规律。
+sources:
+  - title: Google Supervised Learning
+    url: https://developers.google.com/machine-learning/intro-to-ml/supervised
+    license: CC BY 4.0
+  - title: TensorFlow Image Classification
+    url: https://www.tensorflow.org/tutorials/images/classification
+    license: CC BY 4.0
+review:
+  evidence_audit: Google source supports dataset size/diversity and training examples; TensorFlow tutorial demonstrates image datasets for classification.
+  rebuttal_audit: Avoid saying more data always solves the problem; mention quality and diversity.
+  reviewed_at: "2026-07-14"

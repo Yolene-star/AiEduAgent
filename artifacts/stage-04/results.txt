@@ -1,0 +1,36 @@
+Stage 4 verification results
+
+Knowledge content:
+- Five U1 YAML cards were added under content/cards/u1/.
+- Cards: U1-C01 pixel, U1-C02 label, U1-C03 training data, U1-C04 image classification, U1-C05 train/validation/test split.
+- Each card has status, version, canonical_claims, misconceptions, sources, and review metadata.
+- Each card has at least two sources.
+
+Backend validation:
+- Command: /home/yjm/miniconda3/envs/aieduagent-py312/bin/python -m pytest backend/tests -q
+- Result: 42 passed in 0.59s
+- Knowledge card schema validation passed.
+- 20 golden question retrieval cases passed.
+- Out-of-scope question returns a boundary response with no card IDs and no sources.
+- Source mapping ignores nonexistent card IDs.
+
+Frontend regression:
+- Command: corepack pnpm test
+- Result: 3 test files passed, 4 tests passed
+- Command: corepack pnpm build
+- Result: vue-tsc and vite build passed
+
+Runtime checks:
+- POST /api/v1/chat with {"stage":"lower_primary","message":"AI怎么认识小猫？"} returned card IDs ["U1-C04","U1-C02"] and backend-mapped source links.
+- POST /api/v1/chat with {"stage":"lower_primary","message":"今天午饭吃什么？"} returned the U1 boundary response and sources [].
+
+Source boundary:
+- Final source titles and URLs are mapped by backend/app/knowledge.py from legal card IDs.
+- The model provider cannot place arbitrary URLs into the response source area.
+
+Source references used:
+- Google Supervised Learning: https://developers.google.com/machine-learning/intro-to-ml/supervised
+- Google Machine Learning Glossary: https://developers.google.com/machine-learning/glossary
+- TensorFlow Image Classification: https://www.tensorflow.org/tutorials/images/classification
+- OpenCV Basic Operations on Images: https://docs.opencv.org/4.x/d3/df2/tutorial_py_basic_ops.html
+- scikit-learn train_test_split: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html

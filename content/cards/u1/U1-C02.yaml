@@ -1,0 +1,36 @@
+id: U1-C02
+title: 标签
+version: 1
+status: model_checked
+prerequisites:
+  - U1-C01
+aliases:
+  - 标签
+  - label
+  - 标注
+  - 答案
+  - 类别名
+keywords:
+  - 标签
+  - 标注
+  - 答案
+  - 小猫
+  - 监督学习
+canonical_claims:
+  - 在监督学习中，标签是模型要学习预测的答案或目标值。
+  - 带有特征和标签的数据样本叫作有标签样本。
+  - 图像分类任务中，标签可以表示图片所属类别，例如“小猫”或“汽车”。
+misconceptions:
+  - 标签不是模型自己一开始就知道的知识，通常来自人工标注或已有数据。
+  - 标签错了会影响模型学习，不能把标注质量当成无关细节。
+sources:
+  - title: Google Supervised Learning
+    url: https://developers.google.com/machine-learning/intro-to-ml/supervised
+    license: CC BY 4.0
+  - title: Google Machine Learning Glossary
+    url: https://developers.google.com/machine-learning/glossary
+    license: CC BY 4.0
+review:
+  evidence_audit: Google supervised learning material defines label as the answer/value to predict and explains labeled examples.
+  rebuttal_audit: Low-grade explanations should compare labels to name tags, but avoid implying labels are always perfectly correct.
+  reviewed_at: "2026-07-14"

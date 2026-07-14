@@ -19,7 +19,14 @@ describe('App', () => {
           answer: '它会从许多带有名字的小猫图片中学习共同特点。',
           check_question: '图片旁边写着‘小猫’，这个名字在训练中叫什么？',
           used_card_ids: ['U1-C02', 'U1-C04'],
-          next_actions: ['answer_check', 'open_storybook']
+          next_actions: ['answer_check', 'open_storybook'],
+          sources: [
+            {
+              card_id: 'U1-C02',
+              title: 'Google Supervised Learning',
+              url: 'https://developers.google.com/machine-learning/intro-to-ml/supervised'
+            }
+          ]
         }),
         { status: 200, headers: { 'content-type': 'application/json' } }
       )
@@ -41,6 +48,7 @@ describe('App', () => {
     )
     expect(wrapper.text()).toContain('它会从许多带有名字的小猫图片中学习共同特点。')
     expect(wrapper.text()).toContain('U1-C02')
+    expect(wrapper.text()).toContain('Google Supervised Learning')
   })
 
   it('shows a readable error when the backend request fails', async () => {

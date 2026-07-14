@@ -84,6 +84,8 @@ class RealModelProvider:
         return self._parse_response(response)
 
     def _build_payload(self, request: TutorGenerationRequest) -> dict[str, object]:
+        claims = "\n".join(f"- {claim}" for claim in request.canonical_claims)
+        allowed_cards = ", ".join(request.retrieved_card_ids)
         return {
             "model": self.model_alias,
             "messages": [
@@ -92,11 +94,17 @@ class RealModelProvider:
                     "content": (
                         "你是K12人工智能通识课教学助手。只输出JSON，字段必须为 "
                         "answer, check_question, used_card_ids, next_actions。"
+                        "used_card_ids 只能从后端提供的合法卡片ID中选择，不能生成来源URL。"
                     ),
                 },
                 {
                     "role": "user",
-                    "content": f"学段：{request.stage}\n问题：{request.message}",
+                    "content": (
+                        f"学段：{request.stage}\n"
+                        f"问题：{request.message}\n"
+                        f"合法卡片ID：{allowed_cards}\n"
+                        f"事实边界：\n{claims}"
+                    ),
                 },
             ],
             "response_format": {"type": "json_object"},

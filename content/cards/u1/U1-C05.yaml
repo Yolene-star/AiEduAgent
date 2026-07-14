@@ -1,0 +1,41 @@
+id: U1-C05
+title: 训练集、验证集和测试集
+version: 1
+status: model_checked
+prerequisites:
+  - U1-C03
+aliases:
+  - 训练集
+  - 验证集
+  - 测试集
+  - train test split
+  - 数据划分
+keywords:
+  - 训练集
+  - 验证集
+  - 测试集
+  - 划分
+  - 评估
+  - 泛化
+  - 出错
+  - 检查
+  - 学会
+  - 准确
+canonical_claims:
+  - 训练集用于让模型学习规律。
+  - 验证集常用于调试模型选择，测试集用于最终评估模型在未见数据上的表现。
+  - 把数据划分为训练和测试部分，可以帮助检查模型是否只是在记住训练样本。
+misconceptions:
+  - 测试集不应该一边训练一边反复偷看，否则评估会变得不可信。
+  - 测试准确率高也不代表模型永远不会出错。
+sources:
+  - title: scikit-learn train_test_split
+    url: https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
+    license: BSD-3-Clause
+  - title: Google Supervised Learning
+    url: https://developers.google.com/machine-learning/intro-to-ml/supervised
+    license: CC BY 4.0
+review:
+  evidence_audit: scikit-learn source supports train/test splitting utility; Google source supports evaluating predictions on unseen data.
+  rebuttal_audit: Keep validation/test distinction simple for younger students; avoid presenting data splitting as a guarantee of correctness.
+  reviewed_at: "2026-07-14"

@@ -11,17 +11,26 @@ class ChatRequest(BaseModel):
     message: str = Field(min_length=1, max_length=500)
 
 
+class SourceLink(BaseModel):
+    card_id: str
+    title: str
+    url: str
+
+
 class ChatResponse(BaseModel):
     answer: str
     check_question: str
     used_card_ids: list[str]
     next_actions: list[str]
+    sources: list[SourceLink] = Field(default_factory=list)
 
 
 class TutorGenerationRequest(BaseModel):
     stage: Stage
     message: str = Field(min_length=1, max_length=500)
     request_id: str
+    retrieved_card_ids: list[str] = []
+    canonical_claims: list[str] = []
 
 
 class TutorGenerationResponse(BaseModel):

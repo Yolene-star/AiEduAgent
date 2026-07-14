@@ -156,6 +156,35 @@ LLM_TIMEOUT_SECONDS=20
 conda run -n aieduagent-py312 python -m pytest backend/tests -q
 ```
 
+## 阶段 4 U1 知识卡与可追溯回答
+
+阶段 4 增加 U1“机器怎样看见世界”的五张知识卡：
+
+- `U1-C01`：像素
+- `U1-C02`：标签
+- `U1-C03`：训练数据
+- `U1-C04`：图像分类
+- `U1-C05`：训练集、验证集和测试集
+
+内容文件：
+
+- `content/cards/u1/*.yaml`
+- `content/aliases.yml`
+- `evals/stage4_golden_cases.json`
+
+后端启动时会校验知识卡 Schema、别名表和 golden cases。`/api/v1/chat` 会先用确定性规则检索卡片，再把合法 `card_id` 映射为来源标题和链接。模型或 FakeProvider 只能返回 `used_card_ids`，不能生成最终来源 URL。
+
+阶段 4 检查：
+
+```bash
+conda run -n aieduagent-py312 python -m pytest backend/tests -q
+cd frontend
+corepack pnpm test
+corepack pnpm build
+```
+
+课程外问题会返回边界提示，不会伪造知识卡或来源。
+
 ## Git 使用
 
 当前运行环境使用分离 Git 目录 `.repo/`。常用命令如下：
