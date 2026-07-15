@@ -28,6 +28,12 @@ Verification:
 - Backend: /home/yjm/miniconda3/envs/aieduagent-py312/bin/python -m pytest backend/tests -q
   Result: 104 passed
 - Frontend tests: corepack pnpm test
-  Result: 6 files, 8 tests passed
+  Result: 7 files, 10 tests passed
 - Frontend build: corepack pnpm build
   Result: success
+
+Follow-up compatibility fix:
+- Speech now follows the MDN Web Speech example pattern: load voices, listen for voiceschanged, and retry while browsers populate voice packs asynchronously.
+- Chinese voices are preferred when available; text and subtitles remain available when no voice exists.
+- sherpa-onnx was reviewed as a future offline TTS option, but not integrated in Stage 7 because the WASM/model payload is too heavy for the current demo baseline.
+- Animation was changed to a fixed 16:9 HTML scene with percentage-positioned elements and a data-driven step timeline, following the same general principle as Motion/Remotion/HyperFrames-style timeline composition without exporting video.

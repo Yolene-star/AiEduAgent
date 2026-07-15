@@ -45,6 +45,7 @@ describe('AnimationPanel', () => {
     await wrapper.vm.$nextTick()
 
     expect(wrapper.text()).toContain('像素网格')
-    expect(wrapper.find('.animation-stage').attributes('data-visual')).toBe('pixel-grid')
+    expect(wrapper.find('.animation-stage').attributes('data-step')).toBe('pixel_grid')
+    expect(wrapper.find('.pixel-node').exists()).toBe(true)
   })
 })

@@ -293,8 +293,15 @@ GET /api/v1/multimodal/storybook/u1-lower-primary
 
 - 前端只解析白名单字段和固定 `visual` 名称，不执行模型生成脚本。
 - 绘本使用本地已审查 SVG 图片，并在 JSON 中提供替代文本。
-- 语音使用浏览器 `speechSynthesis`，不录音、不保存真实学生声音。
+- 语音使用浏览器 `speechSynthesis`，会等待 `voiceschanged` 并优先选择中文 voice；不录音、不保存真实学生声音。
 - 图片或语音失败时，文本和字幕仍然可用。
+- 动画使用固定 16:9 HTML 舞台和百分比坐标，窗口尺寸变化时元素保持相对位置。
+
+调研参考：
+
+- MDN Web Speech 示例：采用 `getVoices()`、`voiceschanged`、语速和音调控制的浏览器 TTS 模式。
+- sherpa-onnx：可作为后续离线 TTS/WASM 方案，但模型和运行时更重，当前阶段不直接集成。
+- Motion / Remotion / HyperFrames 思路：采用数据驱动时间轴和固定画布组合；本项目只实现网页动态效果，不做视频导出。
 
 阶段 7 检查：
 

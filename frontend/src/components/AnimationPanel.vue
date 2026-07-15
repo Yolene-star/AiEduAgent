@@ -13,6 +13,7 @@ let timer: number | undefined
 
 const currentStep = computed<AnimationStep | null>(() => spec.value?.steps[stepIndex.value] ?? null)
 const subtitle = computed(() => currentStep.value?.caption ?? '')
+const progress = computed(() => (spec.value ? stepIndex.value / Math.max(1, spec.value.steps.length - 1) : 0))
 
 async function loadSpec() {
   errorMessage.value = ''
@@ -90,27 +91,40 @@ onBeforeUnmount(clearTimer)
     <template v-if="spec && currentStep">
       <p>{{ spec.subtitle }}</p>
 
-      <div class="animation-stage" :data-visual="currentStep.visual">
-        <div class="visual image-card" aria-hidden="true">
-          <div class="picture-card">
-            <span class="sun"></span>
-            <span class="mountain"></span>
-          </div>
+      <div
+        class="animation-stage"
+        :data-step="currentStep.id"
+        :style="{ '--progress': progress.toString() }"
+        aria-label="图像分类过程动态演示"
+      >
+        <div class="timeline-track" aria-hidden="true">
+          <span
+            v-for="(step, index) in spec.steps"
+            :key="step.id"
+            :class="{ active: index <= stepIndex }"
+          ></span>
         </div>
-        <div class="visual pixel-grid" aria-hidden="true">
+        <div class="scene-object picture-node" aria-hidden="true">
+          <span class="picture-sun"></span>
+          <span class="picture-mountain"></span>
+        </div>
+        <div class="scene-object pixel-node" aria-hidden="true">
           <span v-for="cell in 24" :key="cell"></span>
         </div>
-        <div class="visual feature-lines" aria-hidden="true">
+        <div class="scene-object feature-node" aria-hidden="true">
           <span></span>
           <span></span>
           <span></span>
         </div>
-        <div class="visual score-bars" aria-hidden="true">
-          <span style="--score: 78%">类别 A</span>
-          <span style="--score: 42%">类别 B</span>
-          <span style="--score: 24%">类别 C</span>
+        <div class="scene-object model-node" aria-hidden="true">
+          <span>模型</span>
         </div>
-        <div class="visual label-badge" aria-hidden="true">预测标签</div>
+        <div class="scene-object score-node" aria-hidden="true">
+          <span style="--score: 78%">猫</span>
+          <span style="--score: 42%">狗</span>
+          <span style="--score: 24%">车</span>
+        </div>
+        <div class="scene-object label-node" aria-hidden="true">预测标签：猫</div>
       </div>
 
       <article class="step-caption" aria-live="polite">
