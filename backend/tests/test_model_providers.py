@@ -91,8 +91,11 @@ def test_factory_real_provider_uses_environment(monkeypatch):
 
 
 def test_real_provider_accepts_valid_structured_output():
+    captured_payload = {}
+
     def handler(request: httpx.Request) -> httpx.Response:
         assert request.headers["authorization"] == "Bearer test-key"
+        captured_payload.update(json.loads(request.content))
         return model_response(
             {
                 "answer": "结构化回答",
@@ -109,6 +112,10 @@ def test_real_provider_accepts_valid_structured_output():
 
     assert result.answer == "结构化回答"
     assert result.used_card_ids == ["U1-C02"]
+    assert captured_payload["response_format"] == {"type": "json_object"}
+    assert captured_payload["max_tokens"] == 800
+    assert "json" in captured_payload["messages"][0]["content"].lower()
+    assert "teaching_form" in captured_payload["messages"][0]["content"]
 
 
 def test_real_provider_timeout_is_controlled():
@@ -121,6 +128,20 @@ def test_real_provider_timeout_is_controlled():
         run(provider.generate(generation_request()))
 
     assert exc_info.value.status == "timeout"
+
+
+def test_real_provider_http_error_keeps_safe_detail():
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(400, json={"error": {"message": "bad request"}})
+
+    provider = real_provider(handler)
+
+    with pytest.raises(ModelProviderError) as exc_info:
+        run(provider.generate(generation_request()))
+
+    assert exc_info.value.status == "http_error"
+    assert "http_400" in (exc_info.value.detail or "")
+    assert "test-key" not in (exc_info.value.detail or "")
 
 
 def test_real_provider_retries_rate_limit_once():
@@ -161,6 +182,21 @@ def test_real_provider_rejects_invalid_json():
         run(provider.generate(generation_request()))
 
     assert exc_info.value.status == "invalid_json"
+
+
+def test_real_provider_rejects_empty_content():
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"content": ""}}]},
+        )
+
+    provider = real_provider(handler)
+
+    with pytest.raises(ModelProviderError) as exc_info:
+        run(provider.generate(generation_request()))
+
+    assert exc_info.value.status == "empty_content"
 
 
 def test_real_provider_rejects_empty_answer():

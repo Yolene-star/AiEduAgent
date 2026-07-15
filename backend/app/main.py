@@ -175,10 +175,11 @@ async def chat(request: ChatRequest, http_request: Request):
     except ModelProviderError as error:
         status = error.status
         logger.warning(
-            "model_provider=%s model_alias=%s status=%s request_id=%s",
+            "model_provider=%s model_alias=%s status=%s detail=%s request_id=%s",
             getattr(provider, "provider_name", "unknown"),
             getattr(provider, "model_alias", "unknown"),
             status,
+            error.detail,
             request_id,
         )
         response = fallback_chat_response()

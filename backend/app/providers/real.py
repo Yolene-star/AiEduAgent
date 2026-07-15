@@ -12,6 +12,14 @@ from backend.app.schemas import TutorGenerationRequest, TutorGenerationResponse
 
 logger = logging.getLogger("aieduagent")
 
+REQUIRED_JSON_EXAMPLE = {
+    "answer": "面向学生的回答",
+    "check_question": "一个检查理解的问题？",
+    "used_card_ids": ["U1-C04"],
+    "next_actions": ["answer_check"],
+    "teaching_form": "quick_quiz",
+}
+
 
 class RealModelProvider:
     provider_name = "real"
@@ -77,9 +85,13 @@ class RealModelProvider:
         )
 
         if response.status_code == 429:
-            raise ModelProviderError("Model rate limit", status="rate_limited")
+            raise ModelProviderError("Model rate limit", status="rate_limited", detail="http_429")
         if response.status_code >= 400:
-            raise ModelProviderError("Model HTTP error", status="http_error")
+            raise ModelProviderError(
+                "Model HTTP error",
+                status="http_error",
+                detail=f"http_{response.status_code}:{response.text[:300]}",
+            )
 
         return self._parse_response(response)
 
@@ -95,6 +107,8 @@ class RealModelProvider:
                         "你是K12人工智能通识课教学助手。只输出JSON，字段必须为 "
                         "answer, check_question, used_card_ids, next_actions, teaching_form。"
                         "used_card_ids 只能从后端提供的合法卡片ID中选择，不能生成来源URL。"
+                        "Return strict json only. Example json: "
+                        f"{json.dumps(REQUIRED_JSON_EXAMPLE, ensure_ascii=False)}"
                     ),
                 },
                 {
@@ -110,6 +124,7 @@ class RealModelProvider:
                 },
             ],
             "response_format": {"type": "json_object"},
+            "max_tokens": 800,
             "temperature": 0.2,
         }
 
@@ -118,12 +133,23 @@ class RealModelProvider:
             payload = response.json()
             content = payload["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
-            raise ModelProviderError("Model response shape is invalid", status="invalid_json") from exc
+            raise ModelProviderError(
+                "Model response shape is invalid",
+                status="invalid_json",
+                detail=f"shape:{response.text[:300]}",
+            ) from exc
+
+        if content is None or (isinstance(content, str) and not content.strip()):
+            raise ModelProviderError("Model returned empty content", status="empty_content")
 
         try:
             data = json.loads(content) if isinstance(content, str) else content
         except json.JSONDecodeError as exc:
-            raise ModelProviderError("Model returned invalid JSON", status="invalid_json") from exc
+            raise ModelProviderError(
+                "Model returned invalid JSON",
+                status="invalid_json",
+                detail=f"content:{str(content)[:300]}",
+            ) from exc
 
         if not isinstance(data, Mapping):
             raise ModelProviderError("Model structured output is not an object", status="invalid_json")
@@ -131,4 +157,8 @@ class RealModelProvider:
         try:
             return TutorGenerationResponse.model_validate(data)
         except ValidationError as exc:
-            raise ModelProviderError("Model structured output validation failed", status="invalid_json") from exc
+            raise ModelProviderError(
+                "Model structured output validation failed",
+                status="invalid_json",
+                detail=f"validation:{exc.errors()}",
+            ) from exc

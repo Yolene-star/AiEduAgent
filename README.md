@@ -142,9 +142,9 @@ MODEL_PROVIDER=fake python -m uvicorn backend.app.main:app --reload --host 127.0
 
 ```bash
 MODEL_PROVIDER=real
-LLM_MODEL=replace_me
+LLM_MODEL=deepseek-v4-flash
 LLM_API_KEY=replace_me
-LLM_BASE_URL=https://api.openai.com/v1
+LLM_BASE_URL=https://api.deepseek.com
 LLM_TIMEOUT_SECONDS=20
 ```
 
@@ -154,6 +154,17 @@ LLM_TIMEOUT_SECONDS=20
 
 ```bash
 conda run -n aieduagent-py312 python -m pytest backend/tests -q
+```
+
+DeepSeek 兼容性检查，不会打印密钥：
+
+```bash
+MODEL_PROVIDER=real \
+LLM_MODEL=deepseek-v4-flash \
+LLM_API_KEY=你的DeepSeek密钥 \
+LLM_BASE_URL=https://api.deepseek.com \
+LLM_TIMEOUT_SECONDS=20 \
+conda run -n aieduagent-py312 python scripts/check_model_provider.py
 ```
 
 ## 阶段 4 U1 知识卡与可追溯回答
