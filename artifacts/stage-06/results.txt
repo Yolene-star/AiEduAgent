@@ -1,0 +1,28 @@
+Stage 6 acceptance evidence
+Date: 2026-07-15
+
+Scope:
+- Fixed quiz bank: content/quizzes/u1_stage6.json
+- Quiz types: multiple_choice, true_false, ordering
+- Coverage: 5 U1 concepts x 4 stages = 20 deterministic questions
+- Submit API: POST /api/v1/quiz/{quiz_id}/submit
+- List API: GET /api/v1/quizzes?stage=lower_primary
+- Learning events: data/demo/learning_events.jsonl, ignored by Git
+- Reset script: scripts/reset_demo.ps1
+- Frontend panel: frontend/src/components/QuizPanel.vue
+
+Harness checks:
+- 20 fixed quiz grading cases passed.
+- Wrong-answer feedback includes misconception-specific error_type and explanation.
+- Duplicate idempotency_key returns already_recorded=true and does not append a second event.
+- Invalid options return HTTP 422 and do not write learning_events.
+- Learning events persist as JSONL across reads.
+- One command can reset demo progress and seed two virtual students.
+
+Verification:
+- Backend: /home/yjm/miniconda3/envs/aieduagent-py312/bin/python -m pytest backend/tests -q
+  Result: 98 passed
+- Frontend tests: corepack pnpm test
+  Result: 4 files, 5 tests passed
+- Frontend build: corepack pnpm build
+  Result: success

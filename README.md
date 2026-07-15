@@ -208,6 +208,40 @@ corepack pnpm build
 
 程序负责状态迁移，模型只生成当前状态需要的结构化内容。非法状态迁移会返回 `409`，例如不能从 `WELCOME` 直接跳到 `RECOMMEND`。
 
+## 阶段 6 游戏化练习与学习事件
+
+阶段 6 增加“讲解—作答—反馈—记录”的最小闭环：
+
+- 固定题库：`content/quizzes/u1_stage6.json`
+- 题目数量：5 个 U1 概念 × 4 个学段 = 20 道
+- 题型：选择、判断、排序
+- 列表接口：`GET /api/v1/quizzes?stage=lower_primary`
+- 提交接口：`POST /api/v1/quiz/{quiz_id}/submit`
+- 学习事件：`data/demo/learning_events.jsonl`
+- 重置脚本：`scripts/reset_demo.ps1`
+
+学习事件包含正确性、提示次数、耗时、错因、回看卡片和幂等键。`data/demo/` 是本地演示进度，不提交到 Git；固定题库属于教学内容，会提交。
+
+阶段 6 后端检查：
+
+```bash
+conda run -n aieduagent-py312 python -m pytest backend/tests -q
+```
+
+阶段 6 前端检查：
+
+```bash
+cd frontend
+corepack pnpm test
+corepack pnpm build
+```
+
+Windows PowerShell 重置演示数据：
+
+```powershell
+.\scripts\reset_demo.ps1
+```
+
 ## Git 使用
 
 当前运行环境使用分离 Git 目录 `.repo/`。常用命令如下：

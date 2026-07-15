@@ -2,12 +2,13 @@ import logging
 import time
 from uuid import uuid4
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from backend.app.lesson_state import InvalidLessonTransition, default_event_for_state, transition_state
 from backend.app.providers import ModelProviderError, get_model_provider
+from backend.app.quiz import grade_quiz, list_quiz_questions, load_quizzes
 from backend.app.knowledge import (
     filter_existing_card_ids,
     retrieve_cards,
@@ -18,6 +19,9 @@ from backend.app.stage_policy import get_stage_policy, validate_stage_output
 from backend.app.schemas import (
     ChatRequest,
     ChatResponse,
+    QuizQuestion,
+    QuizSubmitRequest,
+    QuizSubmitResponse,
     SourceLink,
     TutorGenerationRequest,
     generation_to_chat_response,
@@ -30,6 +34,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("aieduagent")
 validate_knowledge_base()
+load_quizzes()
 
 app = FastAPI(title="AiEduAgent Backend", version="0.3.0")
 
@@ -191,3 +196,18 @@ async def chat(request: ChatRequest, http_request: Request):
         request_id,
     )
     return response
+
+
+@app.get("/api/v1/quizzes", response_model=list[QuizQuestion])
+async def quizzes(stage: str | None = None):
+    return list_quiz_questions(stage)
+
+
+@app.post("/api/v1/quiz/{quiz_id}/submit", response_model=QuizSubmitResponse)
+async def submit_quiz(quiz_id: str, request: QuizSubmitRequest):
+    try:
+        return grade_quiz(quiz_id, request)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="Quiz not found") from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc

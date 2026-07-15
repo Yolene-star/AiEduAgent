@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import { sendChat } from './api'
 import AnswerCard from './components/AnswerCard.vue'
 import ChatInput from './components/ChatInput.vue'
+import QuizPanel from './components/QuizPanel.vue'
 import SourceList from './components/SourceList.vue'
 import StageSelector from './components/StageSelector.vue'
 import type { ChatResponse, Stage } from './types'
@@ -47,6 +48,7 @@ async function submitQuestion() {
 
       <AnswerCard v-if="answer" :answer="answer" />
       <SourceList v-if="answer" :card-ids="answer.used_card_ids" :sources="answer.sources" />
+      <QuizPanel :stage="stage" />
     </section>
   </main>
 </template>

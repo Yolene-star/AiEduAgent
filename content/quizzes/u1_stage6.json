@@ -1,0 +1,372 @@
+[
+  {
+    "id": "U1-C01-lower_primary-mc",
+    "stage": "lower_primary",
+    "card_id": "U1-C01",
+    "quiz_type": "multiple_choice",
+    "prompt": "图片像一张小方格纸，每个小方格叫什么？",
+    "options": [
+      {"id": "A", "text": "像素"},
+      {"id": "B", "text": "标签"},
+      {"id": "C", "text": "测试集"}
+    ],
+    "items": [],
+    "answer": "A",
+    "explanation": "像素是图片里最小的颜色小点，很多像素排在一起组成图片。",
+    "misconceptions": {
+      "B": {"error_type": "confuse_label", "feedback": "标签是图片旁边的名字，不是颜色小点。"},
+      "C": {"error_type": "confuse_dataset_split", "feedback": "测试集是一组图片，不是图片里的小方格。"}
+    },
+    "review_card_id": "U1-C01"
+  },
+  {
+    "id": "U1-C01-upper_primary-tf",
+    "stage": "upper_primary",
+    "card_id": "U1-C01",
+    "quiz_type": "true_false",
+    "prompt": "判断：计算机处理图片时，常把图片看成一格一格的像素数据。",
+    "options": [],
+    "items": [],
+    "answer": true,
+    "explanation": "正确。图片可以表示为很多像素，每个像素记录颜色或亮度信息。",
+    "misconceptions": {
+      "false": {"error_type": "pixel_representation", "feedback": "图片进入计算机后通常会变成可计算的像素数据。"}
+    },
+    "review_card_id": "U1-C01"
+  },
+  {
+    "id": "U1-C01-middle_school-order",
+    "stage": "middle_school",
+    "card_id": "U1-C01",
+    "quiz_type": "ordering",
+    "prompt": "把图片进入模型前的处理顺序排好。",
+    "options": [],
+    "items": [
+      {"id": "A", "text": "读取图片文件"},
+      {"id": "B", "text": "得到像素矩阵"},
+      {"id": "C", "text": "交给模型计算"}
+    ],
+    "answer": ["A", "B", "C"],
+    "explanation": "先读取图片，再得到像素矩阵，最后模型才能根据这些数值计算。",
+    "misconceptions": {
+      "default": {"error_type": "wrong_process_order", "feedback": "模型不能直接看见图片文件，它需要先得到像素数据。"}
+    },
+    "review_card_id": "U1-C01"
+  },
+  {
+    "id": "U1-C01-high_school-mc",
+    "stage": "high_school",
+    "card_id": "U1-C01",
+    "quiz_type": "multiple_choice",
+    "prompt": "在图像分类实验中，像素矩阵最接近下面哪种角色？",
+    "options": [
+      {"id": "A", "text": "模型的输入特征数据"},
+      {"id": "B", "text": "人工写好的最终答案"},
+      {"id": "C", "text": "测试集划分比例"}
+    ],
+    "items": [],
+    "answer": "A",
+    "explanation": "像素矩阵是模型接收并计算的输入数据，后续模型会从中学习判别线索。",
+    "misconceptions": {
+      "B": {"error_type": "confuse_input_label", "feedback": "最终答案通常来自标签，不是像素本身。"},
+      "C": {"error_type": "confuse_data_split", "feedback": "划分比例描述数据集用法，不是单张图片的输入表示。"}
+    },
+    "review_card_id": "U1-C01"
+  },
+  {
+    "id": "U1-C02-lower_primary-mc",
+    "stage": "lower_primary",
+    "card_id": "U1-C02",
+    "quiz_type": "multiple_choice",
+    "prompt": "图片旁边写着“小猫”，这个名字在训练中叫什么？",
+    "options": [
+      {"id": "A", "text": "标签"},
+      {"id": "B", "text": "像素"},
+      {"id": "C", "text": "验证集"}
+    ],
+    "items": [],
+    "answer": "A",
+    "explanation": "标签就是给样本配上的正确名字，模型会学习图片和标签之间的关系。",
+    "misconceptions": {
+      "B": {"error_type": "confuse_pixel", "feedback": "像素是图片里的颜色小点，不是图片的名字。"},
+      "C": {"error_type": "confuse_dataset_split", "feedback": "验证集是一组用来检查模型的数据。"}
+    },
+    "review_card_id": "U1-C02"
+  },
+  {
+    "id": "U1-C02-upper_primary-tf",
+    "stage": "upper_primary",
+    "card_id": "U1-C02",
+    "quiz_type": "true_false",
+    "prompt": "判断：标签越随便，模型越容易学准。",
+    "options": [],
+    "items": [],
+    "answer": false,
+    "explanation": "错误。标签要尽量准确，否则模型会学到错误对应关系。",
+    "misconceptions": {
+      "true": {"error_type": "label_quality", "feedback": "随便的标签会误导模型，不会让模型更准。"}
+    },
+    "review_card_id": "U1-C02"
+  },
+  {
+    "id": "U1-C02-middle_school-mc",
+    "stage": "middle_school",
+    "card_id": "U1-C02",
+    "quiz_type": "multiple_choice",
+    "prompt": "监督学习里，标签主要表示什么？",
+    "options": [
+      {"id": "A", "text": "模型要学习预测的目标答案"},
+      {"id": "B", "text": "图片文件的大小"},
+      {"id": "C", "text": "训练轮数"}
+    ],
+    "items": [],
+    "answer": "A",
+    "explanation": "标签给出目标答案，模型通过样本输入和标签学习预测规律。",
+    "misconceptions": {
+      "B": {"error_type": "metadata_confusion", "feedback": "文件大小是元数据，不是监督学习目标。"},
+      "C": {"error_type": "training_setting_confusion", "feedback": "训练轮数是训练设置，不是标签。"}
+    },
+    "review_card_id": "U1-C02"
+  },
+  {
+    "id": "U1-C02-high_school-order",
+    "stage": "high_school",
+    "card_id": "U1-C02",
+    "quiz_type": "ordering",
+    "prompt": "把有标签图像数据用于监督学习的顺序排好。",
+    "options": [],
+    "items": [
+      {"id": "A", "text": "收集图片"},
+      {"id": "B", "text": "标注类别标签"},
+      {"id": "C", "text": "训练分类模型"}
+    ],
+    "answer": ["A", "B", "C"],
+    "explanation": "先收集样本，再为样本标注目标标签，最后用这些配对数据训练模型。",
+    "misconceptions": {
+      "default": {"error_type": "supervised_flow_order", "feedback": "监督学习需要先有样本和标签，再训练模型。"}
+    },
+    "review_card_id": "U1-C02"
+  },
+  {
+    "id": "U1-C03-lower_primary-tf",
+    "stage": "lower_primary",
+    "card_id": "U1-C03",
+    "quiz_type": "true_false",
+    "prompt": "判断：只给机器看一张猫图，它通常就能认识所有猫。",
+    "options": [],
+    "items": [],
+    "answer": false,
+    "explanation": "错误。模型通常需要看很多不同样子的例子，才更容易学到共同特点。",
+    "misconceptions": {
+      "true": {"error_type": "too_few_examples", "feedback": "一个例子太少，机器可能只记住那一张图。"}
+    },
+    "review_card_id": "U1-C03"
+  },
+  {
+    "id": "U1-C03-upper_primary-mc",
+    "stage": "upper_primary",
+    "card_id": "U1-C03",
+    "quiz_type": "multiple_choice",
+    "prompt": "哪一组更适合训练“识别猫”的模型？",
+    "options": [
+      {"id": "A", "text": "许多不同颜色、姿势、场景的猫图"},
+      {"id": "B", "text": "同一张猫图复制一百遍"},
+      {"id": "C", "text": "只有狗图"}
+    ],
+    "items": [],
+    "answer": "A",
+    "explanation": "训练数据越丰富，模型越有机会学到稳定特征，而不是记住单一例子。",
+    "misconceptions": {
+      "B": {"error_type": "duplicate_data", "feedback": "重复同一张图不能带来真正丰富的例子。"},
+      "C": {"error_type": "wrong_class_data", "feedback": "只有狗图无法教会模型认识猫。"}
+    },
+    "review_card_id": "U1-C03"
+  },
+  {
+    "id": "U1-C03-middle_school-order",
+    "stage": "middle_school",
+    "card_id": "U1-C03",
+    "quiz_type": "ordering",
+    "prompt": "把训练数据准备流程排好。",
+    "options": [],
+    "items": [
+      {"id": "A", "text": "收集样本"},
+      {"id": "B", "text": "清理错误或重复样本"},
+      {"id": "C", "text": "交给模型训练"}
+    ],
+    "answer": ["A", "B", "C"],
+    "explanation": "训练前先收集数据，再清理明显问题，最后才进入训练。",
+    "misconceptions": {
+      "default": {"error_type": "data_pipeline_order", "feedback": "带着明显错误或重复样本训练，会影响模型学习。"}
+    },
+    "review_card_id": "U1-C03"
+  },
+  {
+    "id": "U1-C03-high_school-mc",
+    "stage": "high_school",
+    "card_id": "U1-C03",
+    "quiz_type": "multiple_choice",
+    "prompt": "训练数据分布过窄最可能导致什么问题？",
+    "options": [
+      {"id": "A", "text": "模型在新场景中泛化变差"},
+      {"id": "B", "text": "模型一定完全正确"},
+      {"id": "C", "text": "标签自动变准确"}
+    ],
+    "items": [],
+    "answer": "A",
+    "explanation": "数据分布过窄会让模型学到片面规律，面对新场景时更容易出错。",
+    "misconceptions": {
+      "B": {"error_type": "overconfidence", "feedback": "数据窄不会保证正确，反而可能让测试表现虚高。"},
+      "C": {"error_type": "label_quality_confusion", "feedback": "数据分布不会自动修复标签质量。"}
+    },
+    "review_card_id": "U1-C03"
+  },
+  {
+    "id": "U1-C04-lower_primary-mc",
+    "stage": "lower_primary",
+    "card_id": "U1-C04",
+    "quiz_type": "multiple_choice",
+    "prompt": "机器看一张新图片后猜“猫”或“狗”，这叫做什么？",
+    "options": [
+      {"id": "A", "text": "图像分类"},
+      {"id": "B", "text": "写作文"},
+      {"id": "C", "text": "测试集"}
+    ],
+    "items": [],
+    "answer": "A",
+    "explanation": "图像分类就是给图片判断类别，比如猫、狗、汽车。",
+    "misconceptions": {
+      "B": {"error_type": "wrong_task_type", "feedback": "写作文是生成文字，不是给图片分类别。"},
+      "C": {"error_type": "dataset_split_confusion", "feedback": "测试集是一组检查模型的数据。"}
+    },
+    "review_card_id": "U1-C04"
+  },
+  {
+    "id": "U1-C04-upper_primary-order",
+    "stage": "upper_primary",
+    "card_id": "U1-C04",
+    "quiz_type": "ordering",
+    "prompt": "把图像分类的大致流程排好。",
+    "options": [],
+    "items": [
+      {"id": "A", "text": "输入一张图片"},
+      {"id": "B", "text": "模型计算类别可能性"},
+      {"id": "C", "text": "输出预测类别"}
+    ],
+    "answer": ["A", "B", "C"],
+    "explanation": "图像分类先输入图片，再由模型计算，最后输出类别预测。",
+    "misconceptions": {
+      "default": {"error_type": "classification_flow_order", "feedback": "没有输入图片，模型就无法对这张图片输出类别。"}
+    },
+    "review_card_id": "U1-C04"
+  },
+  {
+    "id": "U1-C04-middle_school-tf",
+    "stage": "middle_school",
+    "card_id": "U1-C04",
+    "quiz_type": "true_false",
+    "prompt": "判断：图像分类模型输出的是一个预测结果，不等于绝对真相。",
+    "options": [],
+    "items": [],
+    "answer": true,
+    "explanation": "正确。分类结果是模型根据已学规律给出的预测，仍可能出错。",
+    "misconceptions": {
+      "false": {"error_type": "prediction_certainty", "feedback": "模型预测不是绝对真相，需要测试和人工判断。"}
+    },
+    "review_card_id": "U1-C04"
+  },
+  {
+    "id": "U1-C04-high_school-mc",
+    "stage": "high_school",
+    "card_id": "U1-C04",
+    "quiz_type": "multiple_choice",
+    "prompt": "评估图像分类模型时，最应该同时关注什么？",
+    "options": [
+      {"id": "A", "text": "准确率、错误样本和数据偏差"},
+      {"id": "B", "text": "只看一次演示是否成功"},
+      {"id": "C", "text": "只看模型名字是否流行"}
+    ],
+    "items": [],
+    "answer": "A",
+    "explanation": "分类评估不能只看单次演示，还要看指标、错误类型和数据来源是否有偏差。",
+    "misconceptions": {
+      "B": {"error_type": "single_demo_bias", "feedback": "单次成功不能代表模型稳定可靠。"},
+      "C": {"error_type": "model_name_bias", "feedback": "模型名字流行不等于适合当前数据和任务。"}
+    },
+    "review_card_id": "U1-C04"
+  },
+  {
+    "id": "U1-C05-lower_primary-order",
+    "stage": "lower_primary",
+    "card_id": "U1-C05",
+    "quiz_type": "ordering",
+    "prompt": "把学习和检查的顺序排好。",
+    "options": [],
+    "items": [
+      {"id": "A", "text": "先用一些图片学习"},
+      {"id": "B", "text": "再用没见过的图片检查"},
+      {"id": "C", "text": "看看猜得对不对"}
+    ],
+    "answer": ["A", "B", "C"],
+    "explanation": "模型先学习，再用没见过的图片检查，最后看预测是否正确。",
+    "misconceptions": {
+      "default": {"error_type": "train_test_order", "feedback": "检查效果要用模型没见过的图片。"}
+    },
+    "review_card_id": "U1-C05"
+  },
+  {
+    "id": "U1-C05-upper_primary-mc",
+    "stage": "upper_primary",
+    "card_id": "U1-C05",
+    "quiz_type": "multiple_choice",
+    "prompt": "测试集最主要用来做什么？",
+    "options": [
+      {"id": "A", "text": "检查模型在没见过的数据上表现如何"},
+      {"id": "B", "text": "让模型背答案"},
+      {"id": "C", "text": "给图片取名字"}
+    ],
+    "items": [],
+    "answer": "A",
+    "explanation": "测试集用于估计模型面对新样本时的效果，不能被模型提前偷看。",
+    "misconceptions": {
+      "B": {"error_type": "test_leakage", "feedback": "测试集不能拿来背答案，否则评估就不公平。"},
+      "C": {"error_type": "label_confusion", "feedback": "给图片取名字是标注标签，不是测试集的作用。"}
+    },
+    "review_card_id": "U1-C05"
+  },
+  {
+    "id": "U1-C05-middle_school-mc",
+    "stage": "middle_school",
+    "card_id": "U1-C05",
+    "quiz_type": "multiple_choice",
+    "prompt": "为什么训练集和测试集要分开？",
+    "options": [
+      {"id": "A", "text": "为了检查模型是否能处理没见过的样本"},
+      {"id": "B", "text": "为了让测试分数一定更高"},
+      {"id": "C", "text": "为了删除所有难题"}
+    ],
+    "items": [],
+    "answer": "A",
+    "explanation": "分开训练集和测试集，可以更公平地估计模型对新数据的表现。",
+    "misconceptions": {
+      "B": {"error_type": "metric_gaming", "feedback": "划分数据不是为了刷高分，而是为了公平评估。"},
+      "C": {"error_type": "cherry_picking", "feedback": "删除难题会让评估失真。"}
+    },
+    "review_card_id": "U1-C05"
+  },
+  {
+    "id": "U1-C05-high_school-tf",
+    "stage": "high_school",
+    "card_id": "U1-C05",
+    "quiz_type": "true_false",
+    "prompt": "判断：反复用测试集调参，会让测试结果变得不可信。",
+    "options": [],
+    "items": [],
+    "answer": true,
+    "explanation": "正确。反复偷看测试集会把测试集也变成开发过程的一部分，导致泛化评估偏乐观。",
+    "misconceptions": {
+      "false": {"error_type": "test_leakage", "feedback": "测试集应尽量只用于最终评估，频繁调参会造成信息泄漏。"}
+    },
+    "review_card_id": "U1-C05"
+  }
+]

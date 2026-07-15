@@ -21,6 +21,43 @@ class SourceLink(BaseModel):
     url: str
 
 
+QuizType = Literal["multiple_choice", "true_false", "ordering"]
+
+
+class QuizOption(BaseModel):
+    id: str = Field(min_length=1)
+    text: str = Field(min_length=1)
+
+
+class QuizQuestion(BaseModel):
+    id: str = Field(min_length=1)
+    stage: Stage
+    card_id: str = Field(pattern=r"^U1-C\d{2}$")
+    quiz_type: QuizType
+    prompt: str = Field(min_length=1)
+    options: list[QuizOption] = Field(default_factory=list)
+    items: list[QuizOption] = Field(default_factory=list)
+    review_card_id: str = Field(pattern=r"^U1-C\d{2}$")
+
+
+class QuizSubmitRequest(BaseModel):
+    student_id: str = Field(default="demo-student", min_length=1, max_length=80)
+    answer: str | bool | list[str]
+    hints_used: int = Field(default=0, ge=0, le=10)
+    elapsed_ms: int = Field(default=0, ge=0)
+    idempotency_key: str = Field(min_length=8, max_length=120)
+
+
+class QuizSubmitResponse(BaseModel):
+    question_id: str
+    correct: bool
+    explanation: str
+    error_type: str
+    review_card_id: str
+    next_actions: list[str]
+    already_recorded: bool = False
+
+
 class ChatResponse(BaseModel):
     answer: str
     check_question: str

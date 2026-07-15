@@ -23,3 +23,31 @@ export interface SourceLink {
   title: string
   url: string
 }
+
+export type QuizType = 'multiple_choice' | 'true_false' | 'ordering'
+
+export interface QuizOption {
+  id: string
+  text: string
+}
+
+export interface QuizQuestion {
+  id: string
+  stage: Stage
+  card_id: string
+  quiz_type: QuizType
+  prompt: string
+  options: QuizOption[]
+  items: QuizOption[]
+  review_card_id: string
+}
+
+export interface QuizSubmitResponse {
+  question_id: string
+  correct: boolean
+  explanation: string
+  error_type: string
+  review_card_id: string
+  next_actions: string[]
+  already_recorded: boolean
+}

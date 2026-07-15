@@ -19,6 +19,7 @@ htmlcov/
 *.db
 *.sqlite
 *.sqlite3
+data/demo/
 
 .next/
 dist/

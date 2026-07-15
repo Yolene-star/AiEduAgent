@@ -103,7 +103,9 @@ button:disabled {
 .status,
 .error,
 .answer-card,
-.sources {
+.sources,
+.quiz-panel,
+.feedback-card {
   border: 1px solid #d8e0e7;
   border-radius: 8px;
   background: #fff;
@@ -121,12 +123,58 @@ button:disabled {
 }
 
 .answer-card,
-.sources {
+.sources,
+.quiz-panel {
   margin-top: 16px;
 }
 
+.section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.quiz-form {
+  display: grid;
+  gap: 16px;
+}
+
+.choice-list,
+.ordering-list {
+  display: grid;
+  gap: 10px;
+}
+
+.choice-list label,
+.ordering-list label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ordering-list label {
+  justify-content: space-between;
+}
+
+.feedback-card {
+  margin-top: 16px;
+  background: #f7fbfa;
+}
+
+.empty {
+  color: #5e7180;
+}
+
 @media (max-width: 700px) {
-  .header-row {
+  .header-row,
+  .section-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ordering-list label {
     align-items: stretch;
     flex-direction: column;
   }
