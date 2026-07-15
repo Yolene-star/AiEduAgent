@@ -12,6 +12,12 @@ const speechError = ref('')
 const voices = ref<SpeechSynthesisVoice[]>([])
 const selectedVoiceName = ref('')
 let voiceRetryTimer: number | undefined
+let activeUtterance: SpeechSynthesisUtterance | null = null
+let isCancelling = false
+
+type SpeechSynthesisWithVoiceChange = SpeechSynthesis & {
+  onvoiceschanged: ((this: SpeechSynthesis, event: Event) => void) | null
+}
 
 const canSpeak = computed(() => typeof window !== 'undefined' && 'speechSynthesis' in window)
 const chineseVoices = computed(() => voices.value.filter((voice) => voice.lang.toLowerCase().startsWith('zh')))
@@ -48,7 +54,11 @@ function scheduleVoiceLoadRetries() {
       clearVoiceRetryTimer()
     }
   }, 250)
-  window.speechSynthesis.onvoiceschanged = loadVoices
+  if (typeof window.speechSynthesis.addEventListener === 'function') {
+    window.speechSynthesis.addEventListener('voiceschanged', loadVoices)
+  } else {
+    ;(window.speechSynthesis as SpeechSynthesisWithVoiceChange).onvoiceschanged = loadVoices
+  }
 }
 
 function clearVoiceRetryTimer() {
@@ -62,7 +72,12 @@ function stopSpeech() {
   if (!canSpeak.value) {
     return
   }
+  isCancelling = true
   window.speechSynthesis.cancel()
+  window.setTimeout(() => {
+    isCancelling = false
+  }, 0)
+  activeUtterance = null
   isSpeaking.value = false
   isPaused.value = false
 }
@@ -76,18 +91,37 @@ function playSpeech() {
   loadVoices()
 
   stopSpeech()
+  isCancelling = false
+  speakWithVoice(selectedVoice.value, false)
+}
+
+function speakWithVoice(voice: SpeechSynthesisVoice | null, isDefaultRetry: boolean) {
   const utterance = new SpeechSynthesisUtterance(props.text)
   utterance.lang = 'zh-CN'
-  utterance.voice = selectedVoice.value
+  utterance.voice = voice
   utterance.rate = rate.value
+  activeUtterance = utterance
   utterance.onend = () => {
+    if (activeUtterance !== utterance) {
+      return
+    }
     isSpeaking.value = false
     isPaused.value = false
+    activeUtterance = null
   }
-  utterance.onerror = () => {
-    speechError.value = '语音播放失败，文本仍可正常阅读。'
+  utterance.onerror = (event) => {
+    if (isCancelling || activeUtterance !== utterance) {
+      return
+    }
+    if (!isDefaultRetry && voice) {
+      speakWithVoice(null, true)
+      return
+    }
+    const reason = event.error ? `（${event.error}）` : ''
+    speechError.value = `语音播放失败${reason}，已保留字幕。可以换一个声音，或确认浏览器/系统已安装中文语音包。`
     isSpeaking.value = false
     isPaused.value = false
+    activeUtterance = null
   }
   window.speechSynthesis.speak(utterance)
   isSpeaking.value = true
@@ -119,7 +153,11 @@ onMounted(scheduleVoiceLoadRetries)
 onBeforeUnmount(() => {
   clearVoiceRetryTimer()
   if (canSpeak.value) {
-    window.speechSynthesis.onvoiceschanged = null
+    if (typeof window.speechSynthesis.removeEventListener === 'function') {
+      window.speechSynthesis.removeEventListener('voiceschanged', loadVoices)
+    } else {
+      ;(window.speechSynthesis as SpeechSynthesisWithVoiceChange).onvoiceschanged = null
+    }
   }
   stopSpeech()
 })
@@ -144,6 +182,9 @@ onBeforeUnmount(() => {
       <input v-model.number="rate" type="range" min="0.7" max="1.3" step="0.1" />
     </label>
     <p class="caption">字幕：{{ text }}</p>
+    <p class="meta">
+      当前声音：{{ selectedVoice?.name ?? '默认声音' }} · 可用声音 {{ voices.length }} 个
+    </p>
     <p v-if="speechError" class="error" role="alert">{{ speechError }}</p>
   </div>
 </template>

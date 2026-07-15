@@ -37,3 +37,9 @@ Follow-up compatibility fix:
 - Chinese voices are preferred when available; text and subtitles remain available when no voice exists.
 - sherpa-onnx was reviewed as a future offline TTS option, but not integrated in Stage 7 because the WASM/model payload is too heavy for the current demo baseline.
 - Animation was changed to a fixed 16:9 HTML scene with percentage-positioned elements and a data-driven step timeline, following the same general principle as Motion/Remotion/HyperFrames-style timeline composition without exporting video.
+
+Audio troubleshooting fix:
+- Screenshot showed a visible `Microsoft Huihui - Chinese (Simplified, PRC)` voice but `SpeechSynthesisUtterance.onerror` still fired.
+- Likely cause: the browser can list an OS/cloud voice, but that selected voice fails at synthesis time.
+- Fix: keep the active utterance reference, retry once with the browser default voice when the selected voice fails, and show the Web Speech error code in the UI.
+- Difference from MDN speak-easy-synthesis: MDN is a minimal form demo; this app adds Vue lifecycle cleanup, Chinese voice preference, selected-voice fallback, visible subtitles, voice count diagnostics, and no-recording child privacy constraints.
