@@ -6,6 +6,8 @@ from backend.app.lesson_state import LessonEvent, LessonState
 
 
 Stage = Literal["lower_primary", "upper_primary", "middle_school", "high_school"]
+ResourceType = Literal["link", "document", "ppt", "video", "image", "knowledge_card", "quiz"]
+ResourceStatus = Literal["draft", "pending_review"]
 
 
 class ChatRequest(BaseModel):
@@ -19,6 +21,25 @@ class SourceLink(BaseModel):
     card_id: str
     title: str
     url: str
+
+
+class CourseResourceCreate(BaseModel):
+    title: str = Field(min_length=1, max_length=120)
+    resource_type: ResourceType
+    stage: Stage | None = None
+    unit: str = Field(default="U1", min_length=1, max_length=40)
+    topic: str = Field(min_length=1, max_length=120)
+    source_url: str | None = Field(default=None, max_length=500)
+    license: str = Field(default="unknown", min_length=1, max_length=120)
+    description: str = Field(default="", max_length=1000)
+    card_ids: list[str] = Field(default_factory=list)
+    created_by: str = Field(default="demo-teacher", min_length=1, max_length=80)
+
+
+class CourseResourceResponse(CourseResourceCreate):
+    id: str
+    status: ResourceStatus
+    created_at: str
 
 
 QuizType = Literal["multiple_choice", "true_false", "ordering"]

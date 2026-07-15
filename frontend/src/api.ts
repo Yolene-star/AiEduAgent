@@ -1,4 +1,12 @@
-import type { ChatRequest, ChatResponse, QuizQuestion, QuizSubmitResponse, Stage } from './types'
+import type {
+  ChatRequest,
+  ChatResponse,
+  CourseResourceCreate,
+  CourseResourceResponse,
+  QuizQuestion,
+  QuizSubmitResponse,
+  Stage
+} from './types'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000'
 
@@ -52,4 +60,30 @@ export async function submitQuiz(
   }
 
   return response.json() as Promise<QuizSubmitResponse>
+}
+
+export async function fetchResources(): Promise<CourseResourceResponse[]> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/resources`)
+
+  if (!response.ok) {
+    throw new Error(`资源列表请求失败：HTTP ${response.status}`)
+  }
+
+  return response.json() as Promise<CourseResourceResponse[]>
+}
+
+export async function addResource(resource: CourseResourceCreate): Promise<CourseResourceResponse> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/resources`, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify(resource)
+  })
+
+  if (!response.ok) {
+    throw new Error(`资源添加失败：HTTP ${response.status}`)
+  }
+
+  return response.json() as Promise<CourseResourceResponse>
 }

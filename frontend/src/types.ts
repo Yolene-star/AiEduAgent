@@ -24,6 +24,27 @@ export interface SourceLink {
   url: string
 }
 
+export type ResourceType = 'link' | 'document' | 'ppt' | 'video' | 'image' | 'knowledge_card' | 'quiz'
+
+export interface CourseResourceCreate {
+  title: string
+  resource_type: ResourceType
+  stage?: Stage | null
+  unit: string
+  topic: string
+  source_url?: string | null
+  license: string
+  description: string
+  card_ids: string[]
+  created_by: string
+}
+
+export interface CourseResourceResponse extends CourseResourceCreate {
+  id: string
+  status: 'draft' | 'pending_review'
+  created_at: string
+}
+
 export type QuizType = 'multiple_choice' | 'true_false' | 'ordering'
 
 export interface QuizOption {

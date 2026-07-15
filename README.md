@@ -242,6 +242,34 @@ Windows PowerShell 重置演示数据：
 .\scripts\reset_demo.ps1
 ```
 
+## 课程资源添加接口
+
+当前已预留教师/内容侧资源添加接口，但新资源只进入本地草稿区，不会直接进入学生问答知识库。后续需要经过来源、许可证、年龄适配和内容安全审核后，才能转成 `content/cards/`、`content/quizzes/` 或阶段 7 多模态资源。
+
+- 添加资源：`POST /api/v1/resources`
+- 查看草稿：`GET /api/v1/resources`
+- 本地草稿文件：`data/demo/course_resources.jsonl`
+- 前端预留方法：`addResource()`、`fetchResources()`
+
+示例请求：
+
+```json
+{
+  "title": "图像分类补充阅读",
+  "resource_type": "link",
+  "stage": "middle_school",
+  "unit": "U1",
+  "topic": "图像分类",
+  "source_url": "https://example.edu/image-classification",
+  "license": "teacher-reviewed-demo",
+  "description": "后续可审核进入课程库的补充链接。",
+  "card_ids": ["U1-C04"],
+  "created_by": "demo-teacher"
+}
+```
+
+注意：`data/demo/` 是本地运行进度和草稿缓存，不提交到 Git；已经审核过的正式教学内容才提交到 `content/`。
+
 ## Git 使用
 
 当前运行环境使用分离 Git 目录 `.repo/`。常用命令如下：

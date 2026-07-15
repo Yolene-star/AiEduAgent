@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 from backend.app.lesson_state import InvalidLessonTransition, default_event_for_state, transition_state
 from backend.app.providers import ModelProviderError, get_model_provider
 from backend.app.quiz import grade_quiz, list_quiz_questions, load_quizzes
+from backend.app.resources import create_course_resource, list_course_resources
 from backend.app.knowledge import (
     filter_existing_card_ids,
     retrieve_cards,
@@ -19,6 +20,8 @@ from backend.app.stage_policy import get_stage_policy, validate_stage_output
 from backend.app.schemas import (
     ChatRequest,
     ChatResponse,
+    CourseResourceCreate,
+    CourseResourceResponse,
     QuizQuestion,
     QuizSubmitRequest,
     QuizSubmitResponse,
@@ -209,5 +212,18 @@ async def submit_quiz(quiz_id: str, request: QuizSubmitRequest):
         return grade_quiz(quiz_id, request)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="Quiz not found") from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/v1/resources", response_model=list[CourseResourceResponse])
+async def resources():
+    return list_course_resources()
+
+
+@app.post("/api/v1/resources", response_model=CourseResourceResponse, status_code=201)
+async def add_resource(request: CourseResourceCreate):
+    try:
+        return create_course_resource(request)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
