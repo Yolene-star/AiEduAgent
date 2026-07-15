@@ -1,0 +1,33 @@
+Stage 7 acceptance evidence
+Date: 2026-07-15
+
+Scope:
+- AnimationSpec: content/multimodal/animation_u1_image_classification.json
+- StorybookSpec: content/multimodal/storybook_u1_lower_primary.json
+- Asset register: content/multimodal/asset_licenses.md
+- Storybook images: frontend/public/assets/storybook/u1-page-01.svg through u1-page-06.svg
+- Backend endpoints:
+  - GET /api/v1/multimodal/animation/u1-image-classification
+  - GET /api/v1/multimodal/storybook/u1-lower-primary
+- Frontend renderers:
+  - frontend/src/components/AnimationPanel.vue
+  - frontend/src/components/StorybookPanel.vue
+  - frontend/src/components/SpeechControls.vue
+
+Harness checks:
+- Animation uses the approved five-step image classification sequence.
+- Frontend renders only whitelisted visual names and does not execute model-provided scripts.
+- Animation supports previous, next, play, pause, and restart.
+- Storybook has six pages with consistent self-authored local SVG images.
+- Every storybook image has alt text in StorybookSpec.
+- Browser speech synthesis provides play, pause, resume, rate control, and visible subtitles.
+- If speech or image loading fails, text remains available.
+- Asset source and license notes are recorded in content/multimodal/asset_licenses.md.
+
+Verification:
+- Backend: /home/yjm/miniconda3/envs/aieduagent-py312/bin/python -m pytest backend/tests -q
+  Result: 104 passed
+- Frontend tests: corepack pnpm test
+  Result: 6 files, 8 tests passed
+- Frontend build: corepack pnpm build
+  Result: success

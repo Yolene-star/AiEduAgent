@@ -3,10 +3,12 @@ import { ref } from 'vue'
 
 import { sendChat } from './api'
 import AnswerCard from './components/AnswerCard.vue'
+import AnimationPanel from './components/AnimationPanel.vue'
 import ChatInput from './components/ChatInput.vue'
 import QuizPanel from './components/QuizPanel.vue'
 import SourceList from './components/SourceList.vue'
 import StageSelector from './components/StageSelector.vue'
+import StorybookPanel from './components/StorybookPanel.vue'
 import type { ChatResponse, Stage } from './types'
 
 const stage = ref<Stage>('lower_primary')
@@ -48,6 +50,8 @@ async function submitQuestion() {
 
       <AnswerCard v-if="answer" :answer="answer" />
       <SourceList v-if="answer" :card-ids="answer.used_card_ids" :sources="answer.sources" />
+      <AnimationPanel />
+      <StorybookPanel :stage="stage" />
       <QuizPanel :stage="stage" />
     </section>
   </main>

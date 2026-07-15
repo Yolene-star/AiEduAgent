@@ -8,6 +8,8 @@ from backend.app.lesson_state import LessonEvent, LessonState
 Stage = Literal["lower_primary", "upper_primary", "middle_school", "high_school"]
 ResourceType = Literal["link", "document", "ppt", "video", "image", "knowledge_card", "quiz"]
 ResourceStatus = Literal["draft", "pending_review"]
+AnimationVisual = Literal["image-card", "pixel-grid", "feature-lines", "score-bars", "label-badge"]
+AnimationControl = Literal["play", "pause", "restart", "previous", "next"]
 
 
 class ChatRequest(BaseModel):
@@ -40,6 +42,46 @@ class CourseResourceResponse(CourseResourceCreate):
     id: str
     status: ResourceStatus
     created_at: str
+
+
+class AnimationStep(BaseModel):
+    id: str = Field(min_length=1, max_length=60)
+    title: str = Field(min_length=1, max_length=80)
+    caption: str = Field(min_length=1, max_length=240)
+    visual: AnimationVisual
+
+
+class AnimationSpec(BaseModel):
+    id: str = Field(min_length=1, max_length=80)
+    title: str = Field(min_length=1, max_length=120)
+    concept_id: str = Field(pattern=r"^U1-C\d{2}$")
+    template: Literal["image_classification_process"]
+    version: int = Field(ge=1)
+    subtitle: str = Field(min_length=1, max_length=240)
+    steps: list[AnimationStep] = Field(min_length=5, max_length=5)
+    allowed_controls: list[AnimationControl] = Field(min_length=1)
+    license: str = Field(min_length=1)
+
+
+class StorybookPage(BaseModel):
+    page: int = Field(ge=1, le=6)
+    title: str = Field(min_length=1, max_length=80)
+    image: str = Field(min_length=1, max_length=200)
+    alt: str = Field(min_length=1, max_length=200)
+    narration: str = Field(min_length=1, max_length=240)
+    dialogue: str = Field(min_length=1, max_length=240)
+    question: str = Field(min_length=1, max_length=160)
+
+
+class StorybookSpec(BaseModel):
+    id: str = Field(min_length=1, max_length=80)
+    title: str = Field(min_length=1, max_length=120)
+    stage: Stage
+    concept_id: str = Field(pattern=r"^U1-C\d{2}$")
+    version: int = Field(ge=1)
+    recommended_by_default: bool
+    pages: list[StorybookPage] = Field(min_length=6, max_length=6)
+    license: str = Field(min_length=1)
 
 
 QuizType = Literal["multiple_choice", "true_false", "ordering"]

@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from backend.app.lesson_state import InvalidLessonTransition, default_event_for_state, transition_state
+from backend.app.multimodal import load_animation_spec, load_storybook_spec, validate_multimodal_assets
 from backend.app.providers import ModelProviderError, get_model_provider
 from backend.app.quiz import grade_quiz, list_quiz_questions, load_quizzes
 from backend.app.resources import create_course_resource, list_course_resources
@@ -20,12 +21,14 @@ from backend.app.stage_policy import get_stage_policy, validate_stage_output
 from backend.app.schemas import (
     ChatRequest,
     ChatResponse,
+    AnimationSpec,
     CourseResourceCreate,
     CourseResourceResponse,
     QuizQuestion,
     QuizSubmitRequest,
     QuizSubmitResponse,
     SourceLink,
+    StorybookSpec,
     TutorGenerationRequest,
     generation_to_chat_response,
 )
@@ -38,6 +41,7 @@ logging.basicConfig(
 logger = logging.getLogger("aieduagent")
 validate_knowledge_base()
 load_quizzes()
+validate_multimodal_assets()
 
 app = FastAPI(title="AiEduAgent Backend", version="0.3.0")
 
@@ -227,3 +231,13 @@ async def add_resource(request: CourseResourceCreate):
         return create_course_resource(request)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/v1/multimodal/animation/u1-image-classification", response_model=AnimationSpec)
+async def animation_spec():
+    return load_animation_spec()
+
+
+@app.get("/api/v1/multimodal/storybook/u1-lower-primary", response_model=StorybookSpec)
+async def storybook_spec():
+    return load_storybook_spec()

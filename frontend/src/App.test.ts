@@ -13,15 +13,57 @@ describe('App', () => {
   })
 
   it('submits the selected stage and message, then renders the fake answer', async () => {
-    const fetchMock = vi
-      .spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify([]), { status: 200, headers: { 'content-type': 'application/json' } })
-      )
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify([]), { status: 200, headers: { 'content-type': 'application/json' } })
-      )
-      .mockResolvedValueOnce(
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation(async (input) => {
+      const url = String(input)
+      if (url.includes('/api/v1/quizzes')) {
+        return new Response(JSON.stringify([]), { status: 200, headers: { 'content-type': 'application/json' } })
+      }
+      if (url.includes('/api/v1/multimodal/animation')) {
+        return new Response(
+          JSON.stringify({
+            id: 'anim-u1-image-classification',
+            title: '图像分类五步动画',
+            concept_id: 'U1-C04',
+            template: 'image_classification_process',
+            version: 1,
+            subtitle: '动画字幕',
+            steps: [
+              { id: 'image_input', title: '图片进入', caption: '图片进入模型。', visual: 'image-card' },
+              { id: 'pixel_grid', title: '像素网格', caption: '图片变成像素。', visual: 'pixel-grid' },
+              { id: 'feature_hint', title: '寻找线索', caption: '模型寻找线索。', visual: 'feature-lines' },
+              { id: 'class_scores', title: '类别分数', caption: '模型计算分数。', visual: 'score-bars' },
+              { id: 'final_label', title: '输出标签', caption: '输出预测标签。', visual: 'label-badge' }
+            ],
+            allowed_controls: ['play', 'pause', 'restart', 'previous', 'next'],
+            license: 'self-authored-demo-assets'
+          }),
+          { status: 200, headers: { 'content-type': 'application/json' } }
+        )
+      }
+      if (url.includes('/api/v1/multimodal/storybook')) {
+        return new Response(
+          JSON.stringify({
+            id: 'storybook-u1-lower-primary',
+            title: '小智学会看图片',
+            stage: 'lower_primary',
+            concept_id: 'U1-C04',
+            version: 1,
+            recommended_by_default: true,
+            pages: Array.from({ length: 6 }, (_, index) => ({
+              page: index + 1,
+              title: `第${index + 1}页`,
+              image: `/assets/storybook/u1-page-0${index + 1}.svg`,
+              alt: '绘本图片',
+              narration: '旁白',
+              dialogue: '台词',
+              question: '问题？'
+            })),
+            license: 'self-authored-demo-assets'
+          }),
+          { status: 200, headers: { 'content-type': 'application/json' } }
+        )
+      }
+      return Promise.resolve(
         new Response(
           JSON.stringify({
             answer: '它会从许多带有名字的小猫图片中学习共同特点。',
@@ -44,6 +86,7 @@ describe('App', () => {
           { status: 200, headers: { 'content-type': 'application/json' } }
         )
       )
+    })
 
     const wrapper = mount(App)
     await flushPromises()

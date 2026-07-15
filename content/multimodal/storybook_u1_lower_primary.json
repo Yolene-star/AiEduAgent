@@ -1,0 +1,65 @@
+{
+  "id": "storybook-u1-lower-primary",
+  "title": "小智学会看图片",
+  "stage": "lower_primary",
+  "concept_id": "U1-C04",
+  "version": 1,
+  "recommended_by_default": true,
+  "pages": [
+    {
+      "page": 1,
+      "title": "一张新图片",
+      "image": "/assets/storybook/u1-page-01.svg",
+      "alt": "小机器人小智看着一张图片卡片。",
+      "narration": "小智收到一张新图片，它想知道图片里是什么。",
+      "dialogue": "小智说：我先认真看看这张图片。",
+      "question": "你觉得机器第一步应该先拿到什么？"
+    },
+    {
+      "page": 2,
+      "title": "图片变成小格子",
+      "image": "/assets/storybook/u1-page-02.svg",
+      "alt": "图片变成整齐的彩色像素小格子。",
+      "narration": "图片进入电脑后，会变成许多彩色小格子。",
+      "dialogue": "小智说：这些小格子叫像素。",
+      "question": "像素像不像拼图里的小块？"
+    },
+    {
+      "page": 3,
+      "title": "旁边有名字",
+      "image": "/assets/storybook/u1-page-03.svg",
+      "alt": "图片卡片旁边写着标签两个字。",
+      "narration": "学习时，很多图片旁边会写着正确名字。",
+      "dialogue": "小智说：这个名字就是标签。",
+      "question": "如果图片旁边写着苹果，这个名字叫什么？"
+    },
+    {
+      "page": 4,
+      "title": "看很多例子",
+      "image": "/assets/storybook/u1-page-04.svg",
+      "alt": "小智面前摆着许多带标签的图片卡片。",
+      "narration": "小智看很多带标签的图片，慢慢找共同特点。",
+      "dialogue": "小智说：例子越清楚，我越容易学习。",
+      "question": "只看一张图片够不够？"
+    },
+    {
+      "page": 5,
+      "title": "猜一猜类别",
+      "image": "/assets/storybook/u1-page-05.svg",
+      "alt": "小智给三个类别条形分数。",
+      "narration": "遇到新图片时，小智会给不同类别打分。",
+      "dialogue": "小智说：分数最高的类别，可能就是答案。",
+      "question": "模型的猜测一定永远正确吗？"
+    },
+    {
+      "page": 6,
+      "title": "说出标签",
+      "image": "/assets/storybook/u1-page-06.svg",
+      "alt": "小智把预测标签贴到图片下面。",
+      "narration": "最后，小智输出一个预测标签。我们还要检查它有没有猜对。",
+      "dialogue": "小智说：我学会用图片和标签来练习啦。",
+      "question": "今天你记住了像素还是标签？"
+    }
+  ],
+  "license": "self-authored-demo-assets"
+}

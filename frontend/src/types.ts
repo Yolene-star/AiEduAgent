@@ -45,6 +45,48 @@ export interface CourseResourceResponse extends CourseResourceCreate {
   created_at: string
 }
 
+export type AnimationVisual = 'image-card' | 'pixel-grid' | 'feature-lines' | 'score-bars' | 'label-badge'
+
+export interface AnimationStep {
+  id: string
+  title: string
+  caption: string
+  visual: AnimationVisual
+}
+
+export interface AnimationSpec {
+  id: string
+  title: string
+  concept_id: string
+  template: 'image_classification_process'
+  version: number
+  subtitle: string
+  steps: AnimationStep[]
+  allowed_controls: string[]
+  license: string
+}
+
+export interface StorybookPage {
+  page: number
+  title: string
+  image: string
+  alt: string
+  narration: string
+  dialogue: string
+  question: string
+}
+
+export interface StorybookSpec {
+  id: string
+  title: string
+  stage: Stage
+  concept_id: string
+  version: number
+  recommended_by_default: boolean
+  pages: StorybookPage[]
+  license: string
+}
+
 export type QuizType = 'multiple_choice' | 'true_false' | 'ordering'
 
 export interface QuizOption {

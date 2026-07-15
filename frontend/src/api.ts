@@ -3,9 +3,11 @@ import type {
   ChatResponse,
   CourseResourceCreate,
   CourseResourceResponse,
+  AnimationSpec,
   QuizQuestion,
   QuizSubmitResponse,
-  Stage
+  Stage,
+  StorybookSpec
 } from './types'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000'
@@ -86,4 +88,24 @@ export async function addResource(resource: CourseResourceCreate): Promise<Cours
   }
 
   return response.json() as Promise<CourseResourceResponse>
+}
+
+export async function fetchAnimationSpec(): Promise<AnimationSpec> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/multimodal/animation/u1-image-classification`)
+
+  if (!response.ok) {
+    throw new Error(`动画资源请求失败：HTTP ${response.status}`)
+  }
+
+  return response.json() as Promise<AnimationSpec>
+}
+
+export async function fetchStorybookSpec(): Promise<StorybookSpec> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/multimodal/storybook/u1-lower-primary`)
+
+  if (!response.ok) {
+    throw new Error(`绘本资源请求失败：HTTP ${response.status}`)
+  }
+
+  return response.json() as Promise<StorybookSpec>
 }

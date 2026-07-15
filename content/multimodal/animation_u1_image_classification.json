@@ -1,0 +1,42 @@
+{
+  "id": "anim-u1-image-classification",
+  "title": "图像分类五步动画",
+  "concept_id": "U1-C04",
+  "template": "image_classification_process",
+  "version": 1,
+  "subtitle": "从图片到标签，看看机器怎样猜类别。",
+  "steps": [
+    {
+      "id": "image_input",
+      "title": "图片进入",
+      "caption": "先把一张图片交给模型。",
+      "visual": "image-card"
+    },
+    {
+      "id": "pixel_grid",
+      "title": "像素网格",
+      "caption": "图片会变成许多颜色小格子，也就是像素。",
+      "visual": "pixel-grid"
+    },
+    {
+      "id": "feature_hint",
+      "title": "寻找线索",
+      "caption": "模型会寻找边缘、颜色和形状等线索。",
+      "visual": "feature-lines"
+    },
+    {
+      "id": "class_scores",
+      "title": "类别分数",
+      "caption": "模型给不同类别计算可能性。",
+      "visual": "score-bars"
+    },
+    {
+      "id": "final_label",
+      "title": "输出标签",
+      "caption": "最高的类别会成为本次预测标签。",
+      "visual": "label-badge"
+    }
+  ],
+  "allowed_controls": ["play", "pause", "restart", "previous", "next"],
+  "license": "self-authored-demo-assets"
+}

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" role="img" aria-label="图片旁边有标签">
+  <rect width="640" height="360" fill="#f3f7fb"/>
+  <rect x="70" y="54" width="500" height="252" rx="18" fill="#ffffff" stroke="#c8d2dc" stroke-width="4"/>
+  <rect x="126" y="96" width="178" height="132" rx="12" fill="#d9efe8" stroke="#176b5b" stroke-width="4"/>
+  <circle cx="180" cy="144" r="24" fill="#f0c35a"/>
+  <path d="M146 218 L188 176 L220 206 L238 190 L288 228 L146 228 Z" fill="#4a9a88"/>
+  <rect x="354" y="126" width="156" height="70" rx="12" fill="#fff7db" stroke="#f0c35a" stroke-width="4"/>
+  <text x="432" y="171" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#17202a">标签</text>
+  <path d="M306 162 H352" stroke="#47606f" stroke-width="6" stroke-linecap="round"/>
+  <text x="320" y="284" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#17202a">图片旁边的名字</text>
+</svg>

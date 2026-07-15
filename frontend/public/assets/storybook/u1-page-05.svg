@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" role="img" aria-label="类别分数条形图">
+  <rect width="640" height="360" fill="#f3f7fb"/>
+  <rect x="72" y="52" width="496" height="256" rx="18" fill="#ffffff" stroke="#c8d2dc" stroke-width="4"/>
+  <text x="148" y="120" font-family="Arial, sans-serif" font-size="24" fill="#17202a">类别 A</text>
+  <rect x="242" y="96" width="250" height="30" rx="8" fill="#d9efe8"/>
+  <rect x="242" y="96" width="190" height="30" rx="8" fill="#176b5b"/>
+  <text x="148" y="174" font-family="Arial, sans-serif" font-size="24" fill="#17202a">类别 B</text>
+  <rect x="242" y="150" width="250" height="30" rx="8" fill="#d9efe8"/>
+  <rect x="242" y="150" width="104" height="30" rx="8" fill="#3c86a8"/>
+  <text x="148" y="228" font-family="Arial, sans-serif" font-size="24" fill="#17202a">类别 C</text>
+  <rect x="242" y="204" width="250" height="30" rx="8" fill="#d9efe8"/>
+  <rect x="242" y="204" width="70" height="30" rx="8" fill="#f0c35a"/>
+  <text x="320" y="284" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#17202a">比较可能性</text>
+</svg>

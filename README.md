@@ -270,6 +270,41 @@ Windows PowerShell 重置演示数据：
 
 注意：`data/demo/` 是本地运行进度和草稿缓存，不提交到 Git；已经审核过的正式教学内容才提交到 `content/`。
 
+## 阶段 7 动画、绘本与语音模板
+
+阶段 7 增加模板化多模态能力，不依赖现场实时生成视频：
+
+- 动画规格：`content/multimodal/animation_u1_image_classification.json`
+- 绘本规格：`content/multimodal/storybook_u1_lower_primary.json`
+- 资源许可证台账：`content/multimodal/asset_licenses.md`
+- 绘本图片：`frontend/public/assets/storybook/*.svg`
+- 动画组件：`frontend/src/components/AnimationPanel.vue`
+- 绘本组件：`frontend/src/components/StorybookPanel.vue`
+- 语音组件：`frontend/src/components/SpeechControls.vue`
+
+后端接口：
+
+```text
+GET /api/v1/multimodal/animation/u1-image-classification
+GET /api/v1/multimodal/storybook/u1-lower-primary
+```
+
+安全边界：
+
+- 前端只解析白名单字段和固定 `visual` 名称，不执行模型生成脚本。
+- 绘本使用本地已审查 SVG 图片，并在 JSON 中提供替代文本。
+- 语音使用浏览器 `speechSynthesis`，不录音、不保存真实学生声音。
+- 图片或语音失败时，文本和字幕仍然可用。
+
+阶段 7 检查：
+
+```bash
+conda run -n aieduagent-py312 python -m pytest backend/tests -q
+cd frontend
+corepack pnpm test
+corepack pnpm build
+```
+
 ## Git 使用
 
 当前运行环境使用分离 Git 目录 `.repo/`。常用命令如下：
