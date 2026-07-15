@@ -6,6 +6,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from backend.app.lesson_state import InvalidLessonTransition, default_event_for_state, transition_state
 from backend.app.providers import ModelProviderError, get_model_provider
 from backend.app.knowledge import (
     filter_existing_card_ids,
@@ -13,6 +14,7 @@ from backend.app.knowledge import (
     sources_for_card_ids,
     validate_knowledge_base,
 )
+from backend.app.stage_policy import get_stage_policy, validate_stage_output
 from backend.app.schemas import (
     ChatRequest,
     ChatResponse,
@@ -51,6 +53,10 @@ def fallback_chat_response() -> ChatResponse:
         used_card_ids=used_card_ids,
         next_actions=["retry_later", "answer_check"],
         sources=sources_for_card_ids(used_card_ids),
+        lesson_state="REMEDIATE",
+        next_lesson_state="CHECK_UNDERSTANDING",
+        teaching_form="remediate",
+        stage_policy_label="fallback",
     )
 
 
@@ -61,6 +67,10 @@ def out_of_scope_response() -> ChatResponse:
         used_card_ids=[],
         next_actions=["ask_u1_question"],
         sources=[],
+        lesson_state="DIAGNOSE",
+        next_lesson_state="EXPLAIN",
+        teaching_form="boundary",
+        stage_policy_label="U1 boundary",
     )
 
 
@@ -107,6 +117,20 @@ async def chat(request: ChatRequest, http_request: Request):
     started_at = time.perf_counter()
     provider = None
     request_id = http_request.headers.get("x-request-id", str(uuid4()))
+    policy = get_stage_policy(request.stage)
+    lesson_event = request.lesson_event or default_event_for_state(request.lesson_state)
+    try:
+        next_lesson_state = transition_state(request.lesson_state, lesson_event)
+    except InvalidLessonTransition:
+        return JSONResponse(
+            status_code=409,
+            content={
+                "detail": "Invalid lesson state transition",
+                "lesson_state": request.lesson_state.value,
+                "lesson_event": lesson_event.value,
+            },
+        )
+
     retrieved_cards = retrieve_cards(request.message)
     if not retrieved_cards:
         return out_of_scope_response()
@@ -123,6 +147,8 @@ async def chat(request: ChatRequest, http_request: Request):
         request_id=request_id,
         retrieved_card_ids=retrieved_card_ids,
         canonical_claims=canonical_claims,
+        lesson_state=request.lesson_state,
+        next_lesson_state=next_lesson_state,
     )
 
     try:
@@ -137,6 +163,15 @@ async def chat(request: ChatRequest, http_request: Request):
             SourceLink.model_validate(source)
             for source in sources_for_card_ids(response.used_card_ids)
         ]
+        response.lesson_state = request.lesson_state
+        response.next_lesson_state = next_lesson_state
+        response.stage_policy_label = policy.label
+        validation = validate_stage_output(
+            answer=response.answer,
+            check_question=response.check_question,
+            policy=policy,
+        )
+        response.format_warnings = list(validation.errors)
     except ModelProviderError as error:
         status = error.status
         logger.warning(

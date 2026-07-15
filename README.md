@@ -185,6 +185,18 @@ corepack pnpm build
 
 课程外问题会返回边界提示，不会伪造知识卡或来源。
 
+## 阶段 5 四学段适配与状态机
+
+阶段 5 增加配置化学段规则和显式教学状态机：
+
+- `backend/app/stage_policy.py`：四学段 `StagePolicy`、格式校验、四学段基准输出。
+- `backend/app/lesson_state.py`：`LessonState`、`LessonEvent` 和允许迁移表。
+- `evals/stage5_virtual_students.json`：低龄动物兴趣、高中编程兴趣两个虚拟学生。
+- `artifacts/stage-05/four-stage-snapshot.md`：同一问题四学段并排输出。
+- `artifacts/stage-05/results.txt`：阶段 5 验收结果。
+
+程序负责状态迁移，模型只生成当前状态需要的结构化内容。非法状态迁移会返回 `409`，例如不能从 `WELCOME` 直接跳到 `RECOMMEND`。
+
 ## Git 使用
 
 当前运行环境使用分离 Git 目录 `.repo/`。常用命令如下：

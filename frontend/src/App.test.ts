@@ -26,7 +26,12 @@ describe('App', () => {
               title: 'Google Supervised Learning',
               url: 'https://developers.google.com/machine-learning/intro-to-ml/supervised'
             }
-          ]
+          ],
+          lesson_state: 'WELCOME',
+          next_lesson_state: 'DIAGNOSE',
+          teaching_form: 'storybook',
+          stage_policy_label: '小学低年级',
+          format_warnings: []
         }),
         { status: 200, headers: { 'content-type': 'application/json' } }
       )

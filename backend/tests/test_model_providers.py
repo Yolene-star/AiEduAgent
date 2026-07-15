@@ -51,8 +51,9 @@ def test_fake_provider_generates_fixed_structured_output():
 
     result = run(provider.generate(generation_request()))
 
-    assert result.answer == "它会从许多带有名字的小猫图片中学习共同特点。"
+    assert "标签" in result.answer
     assert result.used_card_ids == ["U1-C02", "U1-C04"]
+    assert result.teaching_form == "storybook"
 
 
 def test_factory_defaults_to_fake_without_api_key(monkeypatch):
@@ -98,6 +99,7 @@ def test_real_provider_accepts_valid_structured_output():
                 "check_question": "检查题？",
                 "used_card_ids": ["U1-C02"],
                 "next_actions": ["answer_check"],
+                "teaching_form": "quick_quiz",
             }
         )
 
@@ -134,6 +136,7 @@ def test_real_provider_retries_rate_limit_once():
                 "check_question": "检查题？",
                 "used_card_ids": ["U1-C02"],
                 "next_actions": ["answer_check"],
+                "teaching_form": "quick_quiz",
             }
         )
 

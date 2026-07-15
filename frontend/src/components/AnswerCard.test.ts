@@ -12,7 +12,12 @@ describe('AnswerCard', () => {
           check_question: '图片旁边写着‘小猫’，这个名字在训练中叫什么？',
           used_card_ids: ['U1-C02', 'U1-C04'],
           next_actions: ['answer_check', 'open_storybook'],
-          sources: []
+          sources: [],
+          lesson_state: 'WELCOME',
+          next_lesson_state: 'DIAGNOSE',
+          teaching_form: 'storybook',
+          stage_policy_label: '小学低年级',
+          format_warnings: []
         }
       }
     })
@@ -21,5 +26,8 @@ describe('AnswerCard', () => {
     expect(wrapper.text()).toContain('图片旁边写着‘小猫’，这个名字在训练中叫什么？')
     expect(wrapper.text()).toContain('answer_check')
     expect(wrapper.text()).toContain('open_storybook')
+    expect(wrapper.text()).toContain('小学低年级')
+    expect(wrapper.text()).toContain('WELCOME')
+    expect(wrapper.text()).toContain('DIAGNOSE')
   })
 })

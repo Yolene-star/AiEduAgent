@@ -11,6 +11,11 @@ export interface ChatResponse {
   used_card_ids: string[]
   next_actions: string[]
   sources: SourceLink[]
+  lesson_state: string
+  next_lesson_state: string
+  teaching_form: string
+  stage_policy_label: string
+  format_warnings: string[]
 }
 
 export interface SourceLink {

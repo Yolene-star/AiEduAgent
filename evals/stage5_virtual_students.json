@@ -1,0 +1,20 @@
+[
+  {
+    "id": "low_age_animal_interest",
+    "stage": "lower_primary",
+    "interest": "animals",
+    "sample_question": "AI怎么认识小猫？",
+    "expected_example_type": "animal",
+    "expected_teaching_form": "storybook",
+    "expected_next_action": "answer_check"
+  },
+  {
+    "id": "high_school_programming_interest",
+    "stage": "high_school",
+    "interest": "programming",
+    "sample_question": "怎样用代码检查识图模型有没有学会？",
+    "expected_example_type": "code",
+    "expected_teaching_form": "python_lab",
+    "expected_next_action": "evaluation_task"
+  }
+]

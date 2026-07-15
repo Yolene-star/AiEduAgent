@@ -1,5 +1,6 @@
 from backend.app.providers.base import ModelProviderError
 from backend.app.schemas import TutorGenerationRequest, TutorGenerationResponse
+from backend.app.stage_policy import render_stage_explanation
 
 
 class FakeModelProvider:
@@ -21,9 +22,15 @@ class FakeModelProvider:
         if not used_card_ids:
             used_card_ids = ["U1-C02", "U1-C04"]
 
+        answer, check_question, next_actions = render_stage_explanation(
+            request.stage,
+            used_card_ids[0],
+        )
+
         return TutorGenerationResponse(
-            answer="它会从许多带有名字的小猫图片中学习共同特点。",
-            check_question="图片旁边写着‘小猫’，这个名字在训练中叫什么？",
+            answer=answer,
+            check_question=check_question,
             used_card_ids=used_card_ids[:3],
-            next_actions=["answer_check", "open_storybook"],
+            next_actions=next_actions,
+            teaching_form=next_actions[0],
         )

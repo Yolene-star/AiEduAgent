@@ -9,6 +9,10 @@ defineProps<{
 <template>
   <article class="answer-card">
     <h2>回答</h2>
+    <p class="meta">
+      {{ answer.stage_policy_label }} · {{ answer.lesson_state }} → {{ answer.next_lesson_state }} ·
+      {{ answer.teaching_form }}
+    </p>
     <p>{{ answer.answer }}</p>
     <h3>检查题</h3>
     <p>{{ answer.check_question }}</p>

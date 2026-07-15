@@ -2,6 +2,8 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from backend.app.lesson_state import LessonEvent, LessonState
+
 
 Stage = Literal["lower_primary", "upper_primary", "middle_school", "high_school"]
 
@@ -9,6 +11,8 @@ Stage = Literal["lower_primary", "upper_primary", "middle_school", "high_school"
 class ChatRequest(BaseModel):
     stage: Stage
     message: str = Field(min_length=1, max_length=500)
+    lesson_state: LessonState = LessonState.WELCOME
+    lesson_event: LessonEvent | None = None
 
 
 class SourceLink(BaseModel):
@@ -23,6 +27,11 @@ class ChatResponse(BaseModel):
     used_card_ids: list[str]
     next_actions: list[str]
     sources: list[SourceLink] = Field(default_factory=list)
+    lesson_state: LessonState = LessonState.EXPLAIN
+    next_lesson_state: LessonState = LessonState.CHECK_UNDERSTANDING
+    teaching_form: str = "quick_quiz"
+    stage_policy_label: str = ""
+    format_warnings: list[str] = Field(default_factory=list)
 
 
 class TutorGenerationRequest(BaseModel):
@@ -31,6 +40,8 @@ class TutorGenerationRequest(BaseModel):
     request_id: str
     retrieved_card_ids: list[str] = []
     canonical_claims: list[str] = []
+    lesson_state: LessonState = LessonState.EXPLAIN
+    next_lesson_state: LessonState = LessonState.CHECK_UNDERSTANDING
 
 
 class TutorGenerationResponse(BaseModel):
@@ -38,6 +49,7 @@ class TutorGenerationResponse(BaseModel):
     check_question: str = Field(min_length=1)
     used_card_ids: list[str] = Field(min_length=1)
     next_actions: list[str] = Field(min_length=1)
+    teaching_form: str = Field(min_length=1)
 
 
 def generation_to_chat_response(response: TutorGenerationResponse) -> ChatResponse:
@@ -46,4 +58,5 @@ def generation_to_chat_response(response: TutorGenerationResponse) -> ChatRespon
         check_question=response.check_question,
         used_card_ids=response.used_card_ids,
         next_actions=response.next_actions,
+        teaching_form=response.teaching_form,
     )

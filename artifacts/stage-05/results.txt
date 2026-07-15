@@ -1,0 +1,33 @@
+Stage 5 verification results
+
+Backend tests:
+- Command: /home/yjm/miniconda3/envs/aieduagent-py312/bin/python -m pytest backend/tests -q
+- Result: 70 passed in 0.45s
+
+Frontend regression:
+- Command: corepack pnpm test
+- Result: 3 test files passed, 4 tests passed
+- Command: corepack pnpm build
+- Result: vue-tsc and vite build passed
+
+Stage policy:
+- StagePolicy is configured in backend/app/stage_policy.py.
+- 5 concepts x 4 stages = 20 baseline outputs are checked by backend/tests/test_stage_policy.py.
+- Validator catches over-length answers, too many terms, illegal formulas, and too many check questions.
+- Same question four-stage snapshot is saved in artifacts/stage-05/four-stage-snapshot.md.
+
+Lesson state machine:
+- Implemented with Python Enum and pure transition function in backend/app/lesson_state.py.
+- Happy path WELCOME -> DIAGNOSE -> EXPLAIN -> CHECK_UNDERSTANDING -> PRACTICE -> REFLECT -> RECOMMEND is tested.
+- Wrong answer path CHECK_UNDERSTANDING -> REMEDIATE -> CHECK_UNDERSTANDING is tested.
+- Illegal WELCOME -> RECOMMEND jump is rejected.
+
+Virtual students:
+- evals/stage5_virtual_students.json defines a low-age animal-interest student and a high-school programming-interest student.
+- Expected forms differ: storybook for low-age animal interest, python_lab for high-school programming interest.
+
+Runtime behavior:
+- ChatResponse now includes lesson_state, next_lesson_state, teaching_form, stage_policy_label, and format_warnings.
+- The frontend answer card displays the policy label and state transition.
+- Runtime check for "AI怎么认识小猫？": lower_primary=storybook, upper_primary=quick_quiz, middle_school=flow_animation, high_school=python_lab.
+- Illegal transition WELCOME + REFLECTION_DONE returned HTTP 409.

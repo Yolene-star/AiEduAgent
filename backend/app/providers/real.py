@@ -93,7 +93,7 @@ class RealModelProvider:
                     "role": "system",
                     "content": (
                         "你是K12人工智能通识课教学助手。只输出JSON，字段必须为 "
-                        "answer, check_question, used_card_ids, next_actions。"
+                        "answer, check_question, used_card_ids, next_actions, teaching_form。"
                         "used_card_ids 只能从后端提供的合法卡片ID中选择，不能生成来源URL。"
                     ),
                 },
@@ -101,6 +101,8 @@ class RealModelProvider:
                     "role": "user",
                     "content": (
                         f"学段：{request.stage}\n"
+                        f"当前状态：{request.lesson_state}\n"
+                        f"下一状态：{request.next_lesson_state}\n"
                         f"问题：{request.message}\n"
                         f"合法卡片ID：{allowed_cards}\n"
                         f"事实边界：\n{claims}"

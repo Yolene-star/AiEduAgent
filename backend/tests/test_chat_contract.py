@@ -32,29 +32,32 @@ def test_chat_returns_fixed_fake_answer_contract():
 
     assert response.status_code == 200
     body = response.json()
-    assert body == {
-        "answer": "它会从许多带有名字的小猫图片中学习共同特点。",
-        "check_question": "图片旁边写着‘小猫’，这个名字在训练中叫什么？",
-        "used_card_ids": ["U1-C04", "U1-C02"],
-        "next_actions": ["answer_check", "open_storybook"],
-        "sources": [
-            {
-                "card_id": "U1-C04",
-                "title": "TensorFlow Image Classification",
-                "url": "https://www.tensorflow.org/tutorials/images/classification",
-            },
-            {
-                "card_id": "U1-C04",
-                "title": "Google Supervised Learning",
-                "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
-            },
-            {
-                "card_id": "U1-C02",
-                "title": "Google Machine Learning Glossary",
-                "url": "https://developers.google.com/machine-learning/glossary",
-            },
-        ],
-    }
+    assert "标签" in body["answer"]
+    assert body["check_question"] == "图片旁边写着“小猫”，这个名字叫什么？"
+    assert body["used_card_ids"] == ["U1-C04", "U1-C02"]
+    assert body["next_actions"] == ["storybook", "answer_check"]
+    assert body["lesson_state"] == "WELCOME"
+    assert body["next_lesson_state"] == "DIAGNOSE"
+    assert body["teaching_form"] == "storybook"
+    assert body["stage_policy_label"] == "小学低年级"
+    assert body["format_warnings"] == []
+    assert body["sources"] == [
+        {
+            "card_id": "U1-C04",
+            "title": "TensorFlow Image Classification",
+            "url": "https://www.tensorflow.org/tutorials/images/classification",
+        },
+        {
+            "card_id": "U1-C04",
+            "title": "Google Supervised Learning",
+            "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+        },
+        {
+            "card_id": "U1-C02",
+            "title": "Google Machine Learning Glossary",
+            "url": "https://developers.google.com/machine-learning/glossary",
+        },
+    ]
     assert isinstance(body["used_card_ids"], list)
     assert isinstance(body["next_actions"], list)
 
@@ -106,3 +109,18 @@ def test_chat_returns_boundary_for_out_of_scope_question():
     assert body["used_card_ids"] == []
     assert body["sources"] == []
     assert "不在 U1" in body["answer"]
+
+
+def test_chat_rejects_illegal_state_transition():
+    response = request(
+        "POST",
+        "/api/v1/chat",
+        json={
+            "stage": "lower_primary",
+            "message": "AI怎么认识小猫？",
+            "lesson_state": "WELCOME",
+            "lesson_event": "REFLECTION_DONE",
+        },
+    )
+
+    assert response.status_code == 409
