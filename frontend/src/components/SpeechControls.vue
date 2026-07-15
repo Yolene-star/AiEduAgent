@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
+import {
+  playSherpaAudio,
+  probeSherpaOfflineTts,
+  SherpaOfflineTtsClient,
+  type SherpaTtsProbeResult
+} from '../speech/sherpaOfflineTts'
+
 const props = defineProps<{
   text: string
 }>()
+
+type TtsMode = 'auto' | 'offline' | 'browser'
 
 const isSpeaking = ref(false)
 const isPaused = ref(false)
@@ -11,9 +20,14 @@ const rate = ref(1)
 const speechError = ref('')
 const voices = ref<SpeechSynthesisVoice[]>([])
 const selectedVoiceName = ref('')
+const ttsMode = ref<TtsMode>('auto')
+const offlineProbe = ref<SherpaTtsProbeResult>({ available: false, missing: [] })
+const offlineStatus = ref('正在检测离线中文语音模型...')
 let voiceRetryTimer: number | undefined
 let activeUtterance: SpeechSynthesisUtterance | null = null
 let isCancelling = false
+let sherpaClient: SherpaOfflineTtsClient | null = null
+let sherpaAudioContext: AudioContext | null = null
 
 type SpeechSynthesisWithVoiceChange = SpeechSynthesis & {
   onvoiceschanged: ((this: SpeechSynthesis, event: Event) => void) | null
@@ -61,6 +75,13 @@ function scheduleVoiceLoadRetries() {
   }
 }
 
+async function detectOfflineTts() {
+  offlineProbe.value = await probeSherpaOfflineTts()
+  offlineStatus.value = offlineProbe.value.available
+    ? '离线中文语音模型可用。'
+    : `离线中文语音模型未安装，缺少：${offlineProbe.value.missing.join(', ')}`
+}
+
 function clearVoiceRetryTimer() {
   if (voiceRetryTimer !== undefined) {
     window.clearInterval(voiceRetryTimer)
@@ -70,20 +91,56 @@ function clearVoiceRetryTimer() {
 
 function stopSpeech() {
   if (!canSpeak.value) {
-    return
+    sherpaAudioContext?.close()
+    sherpaAudioContext = null
+  } else {
+    isCancelling = true
+    window.speechSynthesis.cancel()
+    window.setTimeout(() => {
+      isCancelling = false
+    }, 0)
+    sherpaAudioContext?.close()
+    sherpaAudioContext = null
   }
-  isCancelling = true
-  window.speechSynthesis.cancel()
-  window.setTimeout(() => {
-    isCancelling = false
-  }, 0)
   activeUtterance = null
   isSpeaking.value = false
   isPaused.value = false
 }
 
-function playSpeech() {
+async function playSpeech() {
   speechError.value = ''
+  if (ttsMode.value !== 'browser' && offlineProbe.value.available) {
+    try {
+      await playOfflineSpeech()
+      return
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '离线语音生成失败'
+      if (ttsMode.value === 'offline') {
+        speechError.value = `${message}。请检查 sherpa-onnx TTS 模型文件。`
+        return
+      }
+      offlineStatus.value = `${message}，已回退浏览器语音。`
+    }
+  }
+  playBrowserSpeech()
+}
+
+async function playOfflineSpeech() {
+  stopSpeech()
+  sherpaClient ??= new SherpaOfflineTtsClient((status) => {
+    offlineStatus.value = status
+  })
+  offlineStatus.value = '离线语音模型加载中...'
+  await sherpaClient.init()
+  offlineStatus.value = '离线语音生成中...'
+  const audio = await sherpaClient.synthesize(props.text, rate.value)
+  sherpaAudioContext = await playSherpaAudio(audio)
+  isSpeaking.value = true
+  isPaused.value = false
+  offlineStatus.value = '离线语音正在播放。'
+}
+
+function playBrowserSpeech() {
   if (!canSpeak.value) {
     speechError.value = '当前浏览器不支持语音播放，文本仍可正常阅读。'
     return
@@ -128,18 +185,26 @@ function speakWithVoice(voice: SpeechSynthesisVoice | null, isDefaultRetry: bool
 }
 
 function pauseSpeech() {
-  if (!canSpeak.value || !isSpeaking.value) {
+  if (!isSpeaking.value) {
     return
   }
-  window.speechSynthesis.pause()
+  if (sherpaAudioContext) {
+    void sherpaAudioContext.suspend()
+  } else if (canSpeak.value) {
+    window.speechSynthesis.pause()
+  }
   isPaused.value = true
 }
 
 function resumeSpeech() {
-  if (!canSpeak.value || !isSpeaking.value) {
+  if (!isSpeaking.value) {
     return
   }
-  window.speechSynthesis.resume()
+  if (sherpaAudioContext) {
+    void sherpaAudioContext.resume()
+  } else if (canSpeak.value) {
+    window.speechSynthesis.resume()
+  }
   isPaused.value = false
 }
 
@@ -150,6 +215,7 @@ watch(rate, () => {
 })
 
 onMounted(scheduleVoiceLoadRetries)
+onMounted(detectOfflineTts)
 onBeforeUnmount(() => {
   clearVoiceRetryTimer()
   if (canSpeak.value) {
@@ -159,12 +225,22 @@ onBeforeUnmount(() => {
       ;(window.speechSynthesis as SpeechSynthesisWithVoiceChange).onvoiceschanged = null
     }
   }
+  sherpaClient?.terminate()
+  sherpaClient = null
   stopSpeech()
 })
 </script>
 
 <template>
   <div class="speech-controls" aria-label="语音播放控制">
+    <label>
+      <span>语音模式</span>
+      <select v-model="ttsMode" aria-label="选择语音模式">
+        <option value="auto">自动</option>
+        <option value="offline">离线中文</option>
+        <option value="browser">浏览器语音</option>
+      </select>
+    </label>
     <button type="button" @click="playSpeech">播放旁白</button>
     <button type="button" :disabled="!isSpeaking || isPaused" @click="pauseSpeech">暂停</button>
     <button type="button" :disabled="!isSpeaking || !isPaused" @click="resumeSpeech">继续</button>
@@ -185,6 +261,7 @@ onBeforeUnmount(() => {
     <p class="meta">
       当前声音：{{ selectedVoice?.name ?? '默认声音' }} · 可用声音 {{ voices.length }} 个
     </p>
+    <p class="meta">离线语音：{{ offlineStatus }}</p>
     <p v-if="speechError" class="error" role="alert">{{ speechError }}</p>
   </div>
 </template>

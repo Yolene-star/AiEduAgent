@@ -303,6 +303,31 @@ GET /api/v1/multimodal/storybook/u1-lower-primary
 - sherpa-onnx：可作为后续离线 TTS/WASM 方案，但模型和运行时更重，当前阶段不直接集成。
 - Motion / Remotion / HyperFrames 思路：采用数据驱动时间轴和固定画布组合；本项目只实现网页动态效果，不做视频导出。
 
+### 离线中文语音 sherpa-onnx
+
+当前已预留 sherpa-onnx WebAssembly TTS 适配层：
+
+- 适配层：`frontend/src/speech/sherpaOfflineTts.ts`
+- 运行时目录：`frontend/public/vendor/sherpa-onnx-tts/`
+- 资产检查：`python scripts/check_sherpa_tts_assets.py`
+
+需要把 sherpa-onnx `wasm/tts` 构建产物复制到运行时目录，至少包括：
+
+```text
+sherpa-onnx-tts.worker.js
+sherpa-onnx-tts.js
+sherpa-onnx-wasm-main-tts.js
+sherpa-onnx-wasm-main-tts.wasm
+```
+
+以及对应 TTS 模型/data 资产。官方文档说明 sherpa-onnx TTS 支持 WebAssembly，并提供中文预训练模型，例如 `matcha-icefall-zh-baker`、`vits-melo-tts-zh_en`、`aishell3` 等。大模型和 wasm 文件默认被 `.gitignore` 忽略，避免仓库体积失控；演示机本地放置即可。
+
+页面语音模式：
+
+- `自动`：优先探测 sherpa-onnx 离线 TTS，失败后回退浏览器语音。
+- `离线中文`：只使用 sherpa-onnx，缺资产时显示错误。
+- `浏览器语音`：只使用系统/浏览器 `speechSynthesis`。
+
 阶段 7 检查：
 
 ```bash
@@ -310,6 +335,7 @@ conda run -n aieduagent-py312 python -m pytest backend/tests -q
 cd frontend
 corepack pnpm test
 corepack pnpm build
+python ../scripts/check_sherpa_tts_assets.py
 ```
 
 ## Git 使用

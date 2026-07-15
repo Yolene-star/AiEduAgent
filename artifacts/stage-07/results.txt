@@ -43,3 +43,10 @@ Audio troubleshooting fix:
 - Likely cause: the browser can list an OS/cloud voice, but that selected voice fails at synthesis time.
 - Fix: keep the active utterance reference, retry once with the browser default voice when the selected voice fails, and show the Web Speech error code in the UI.
 - Difference from MDN speak-easy-synthesis: MDN is a minimal form demo; this app adds Vue lifecycle cleanup, Chinese voice preference, selected-voice fallback, visible subtitles, voice count diagnostics, and no-recording child privacy constraints.
+
+Offline Chinese TTS enhancement:
+- Added a sherpa-onnx WebAssembly TTS adapter in `frontend/src/speech/sherpaOfflineTts.ts`.
+- Runtime files are expected under `frontend/public/vendor/sherpa-onnx-tts/`.
+- Required runtime files are checked by `scripts/check_sherpa_tts_assets.py`.
+- Large sherpa wasm/model files are ignored by Git and should be installed locally or distributed as release artifacts.
+- Current local asset check result: missing required runtime files, so the app falls back to browser speech until the sherpa assets are copied.

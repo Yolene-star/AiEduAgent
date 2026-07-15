@@ -20,6 +20,9 @@ htmlcov/
 *.sqlite
 *.sqlite3
 data/demo/
+frontend/public/vendor/sherpa-onnx-tts/*
+!frontend/public/vendor/sherpa-onnx-tts/README.md
+!frontend/public/vendor/sherpa-onnx-tts/.gitkeep
 
 .next/
 dist/
