@@ -21,6 +21,15 @@ def generation_request() -> TutorGenerationRequest:
     )
 
 
+def generation_request_with_cards() -> TutorGenerationRequest:
+    return TutorGenerationRequest(
+        stage="lower_primary",
+        message="AI怎么认识小猫？",
+        request_id="stage-3-test",
+        retrieved_card_ids=["U1-C02", "U1-C04"],
+    )
+
+
 def model_response(data: dict[str, object]) -> httpx.Response:
     return httpx.Response(
         200,
@@ -49,11 +58,21 @@ def real_provider(handler) -> RealModelProvider:
 def test_fake_provider_generates_fixed_structured_output():
     provider = FakeModelProvider()
 
-    result = run(provider.generate(generation_request()))
+    result = run(provider.generate(generation_request_with_cards()))
 
     assert "标签" in result.answer
     assert result.used_card_ids == ["U1-C02", "U1-C04"]
     assert result.teaching_form == "storybook"
+
+
+def test_fake_provider_generates_general_answer_without_cards():
+    provider = FakeModelProvider()
+
+    result = run(provider.generate(generation_request()))
+
+    assert result.used_card_ids == []
+    assert result.teaching_form == "general_chat"
+    assert "AI" in result.answer
 
 
 def test_factory_defaults_to_fake_without_api_key(monkeypatch):

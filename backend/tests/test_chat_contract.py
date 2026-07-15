@@ -97,18 +97,19 @@ def test_chat_falls_back_when_provider_fails(monkeypatch, provider):
     assert body["next_actions"] == ["retry_later", "answer_check"]
 
 
-def test_chat_returns_boundary_for_out_of_scope_question():
+def test_chat_uses_general_answer_for_out_of_scope_question():
     response = request(
         "POST",
         "/api/v1/chat",
-        json={"stage": "lower_primary", "message": "今天午饭吃什么？"},
+        json={"stage": "lower_primary", "message": "AI怎么找到我心爱的姐姐？"},
     )
 
     assert response.status_code == 200
     body = response.json()
     assert body["used_card_ids"] == []
     assert body["sources"] == []
-    assert "不在 U1" in body["answer"]
+    assert body["teaching_form"] == "general_chat"
+    assert "不能帮你偷偷定位别人" in body["answer"]
 
 
 def test_chat_rejects_illegal_state_transition():

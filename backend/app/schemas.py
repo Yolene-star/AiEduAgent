@@ -47,7 +47,7 @@ class TutorGenerationRequest(BaseModel):
 class TutorGenerationResponse(BaseModel):
     answer: str = Field(min_length=1)
     check_question: str = Field(min_length=1)
-    used_card_ids: list[str] = Field(min_length=1)
+    used_card_ids: list[str]
     next_actions: list[str] = Field(min_length=1)
     teaching_form: str = Field(min_length=1)
 

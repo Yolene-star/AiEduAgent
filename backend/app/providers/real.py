@@ -96,8 +96,14 @@ class RealModelProvider:
         return self._parse_response(response)
 
     def _build_payload(self, request: TutorGenerationRequest) -> dict[str, object]:
-        claims = "\n".join(f"- {claim}" for claim in request.canonical_claims)
-        allowed_cards = ", ".join(request.retrieved_card_ids)
+        claims = "\n".join(f"- {claim}" for claim in request.canonical_claims) or "- 无课内知识卡。"
+        allowed_cards = ", ".join(request.retrieved_card_ids) or "无"
+        scope_instruction = (
+            "如果合法卡片ID为“无”，说明问题超出当前U1知识卡。"
+            "请给出安全、适龄的通识回答，used_card_ids 必须返回空数组 []，不要编造来源。"
+            "如果学生请求定位、跟踪、获取他人隐私或做危险事情，要温和拒绝，并给出求助家长、老师或正规渠道的替代建议。"
+            "回答最后可以用一句话把问题自然引回人工智能课程。"
+        )
         return {
             "model": self.model_alias,
             "messages": [
@@ -107,6 +113,7 @@ class RealModelProvider:
                         "你是K12人工智能通识课教学助手。只输出JSON，字段必须为 "
                         "answer, check_question, used_card_ids, next_actions, teaching_form。"
                         "used_card_ids 只能从后端提供的合法卡片ID中选择，不能生成来源URL。"
+                        f"{scope_instruction}"
                         "Return strict json only. Example json: "
                         f"{json.dumps(REQUIRED_JSON_EXAMPLE, ensure_ascii=False)}"
                     ),

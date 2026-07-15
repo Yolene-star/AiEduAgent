@@ -62,10 +62,10 @@ def fallback_chat_response() -> ChatResponse:
 
 def out_of_scope_response() -> ChatResponse:
     return ChatResponse(
-        answer="这个问题暂时不在 U1“机器怎样看见世界”的知识卡范围内。你可以问像素、标签、训练数据、图像分类或训练集/测试集。",
+        answer="模型暂时不可用，我不能可靠回答课外问题。你可以稍后再试，或先问像素、标签、训练数据、图像分类这些课内内容。",
         check_question="你想先了解“像素”“标签”还是“图像分类”？",
         used_card_ids=[],
-        next_actions=["ask_u1_question"],
+        next_actions=["retry_later", "ask_u1_question"],
         sources=[],
         lesson_state="DIAGNOSE",
         next_lesson_state="EXPLAIN",
@@ -132,9 +132,6 @@ async def chat(request: ChatRequest, http_request: Request):
         )
 
     retrieved_cards = retrieve_cards(request.message)
-    if not retrieved_cards:
-        return out_of_scope_response()
-
     retrieved_card_ids = [card.id for card in retrieved_cards]
     canonical_claims = [
         f"{card.id} {claim}"
@@ -156,7 +153,7 @@ async def chat(request: ChatRequest, http_request: Request):
         result = await provider.generate(generation_request)
         status = "ok"
         result.used_card_ids = filter_existing_card_ids(result.used_card_ids)
-        if not result.used_card_ids:
+        if retrieved_card_ids and not result.used_card_ids:
             result.used_card_ids = retrieved_card_ids
         response = generation_to_chat_response(result)
         response.sources = [
@@ -182,7 +179,7 @@ async def chat(request: ChatRequest, http_request: Request):
             error.detail,
             request_id,
         )
-        response = fallback_chat_response()
+        response = fallback_chat_response() if retrieved_card_ids else out_of_scope_response()
 
     duration_ms = round((time.perf_counter() - started_at) * 1000, 2)
     logger.info(
